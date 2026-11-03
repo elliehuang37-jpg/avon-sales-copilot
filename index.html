@@ -1168,7 +1168,7 @@ function renderResults() {
 /* ---------- 更多 ---------- */
 let deferredPrompt = null;
 const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) || demo === 'install';
 function installBanner() {
   if (standalone() || demo) return '';
   let hide = false; try { hide = localStorage.getItem('spca-hide-install') === today(); } catch (e) { /* 無法讀取 */ }
@@ -1479,6 +1479,27 @@ if (demo) {
 route();
 if (demo === 'care') { const first = plan().todo[0]; if (first) openCare(first.c.id); }
 if (demo === 'results') go('results');
+// 教學截圖用：?demo=<畫面> 直接打開該畫面
+const byName = n => state.customers.find(c => c.name === n);
+const toBottom = () => setTimeout(() => { $('#sheetCard').scrollTop = 9999; }, 50);
+const DEMO = {
+  welcome: () => openWelcome(),
+  care2: () => { openCare(plan().todo[0].c.id); toBottom(); },
+  risk: () => { openCare(byName('張雅婷').id); flow.msg += '\n保證改善體質，月入輕鬆賺！'; $('#msg').value = flow.msg; updateRisk(); },
+  order: () => { openCare(byName('李佩君').id); pickResult('ordered'); toBottom(); },
+  ai: () => { openCare(plan().todo[0].c.id); openAIHelp(); },
+  customers: () => go('customers'),
+  customer: () => { go('customers'); openCustomer(byName('林美惠').id); },
+  add: () => { go('customers'); openCustomerForm(); },
+  sample: () => openSampleForm(byName('張雅婷').id),
+  campaign: () => openCampaign(),
+  more: () => go('more'),
+  words: () => { go('more'); openWords(); },
+  install: () => install(),
+  guide: () => openGuide(),
+  report: () => { go('results'); setTimeout(() => window.scrollTo(0, 99999), 50); },
+};
+if (DEMO[demo]) DEMO[demo]();
 if (!state.profile.onboarded && !demo) openWelcome();
 
 if ('serviceWorker' in navigator && location.protocol !== 'file:' && !demo) {
