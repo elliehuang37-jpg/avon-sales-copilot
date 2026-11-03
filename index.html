@@ -1,0 +1,1496 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>雅芳銷售小幫手 AVON Sales Partner Copilot</title>
+<meta name="description" content="雅芳銷售小幫手：每天整理該關心的顧客、跟著型錄檔期提醒、建議話術並追蹤結果。資料只存在你的手機。">
+<meta name="theme-color" content="#e5004b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="雅芳小幫手">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+/* 雅芳品牌：Avon Red #E5004B、深紅 #B8003C、Lato＋中文黑體 */
+:root{
+  --bg:#fbf8f8; --surface:#ffffff; --surface-2:#f6eef0; --line:#eadfe2;
+  --text:#1a1418; --muted:#5e5458; --brand:#e5004b; --brand-2:#b8003c; --brand-soft:#fff0f4; --brand-fill:#e5004b; --brand-fill-2:#e5004b; --bar-soft:#f6c3d2;
+  --gold:#e5004b; --ok:#1f7a3f; --ok-soft:#e4f3e9; --warn:#a15c00; --warn-soft:#fff1dc;
+  --line-green:#06c755; --shadow:0 2px 10px rgba(80,10,30,.07);
+  --c-birthday:#e5004b; --c-followup:#a15c00; --c-deadline:#b8003c; --c-refill:#1f7a3f; --c-sample:#0e7c86;
+  --c-newbie:#1d6fb8; --c-catalog:#0060ac; --c-noreply:#5e5458; --c-festival:#c2410c; --c-winback:#8a4b08;
+  --c-dormant:#6d6466; --c-general:#8a5a6e;
+  --fs:17px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#171214; --surface:#221a1d; --surface-2:#2e2428; --line:#3c2f34;
+    --text:#f7eef1; --muted:#bdabb2; --brand:#ff5c8a; --brand-2:#ff8aac; --brand-soft:#3a1824; --brand-fill:#c8003f; --brand-fill-2:#c8003f; --bar-soft:#5c2539;
+    --gold:#ff8aac; --ok:#5fd394; --ok-soft:#173528; --warn:#f2b555; --warn-soft:#3a2b14; --shadow:0 2px 12px rgba(0,0,0,.35);
+    --c-birthday:#c8003f; --c-followup:#9a5a00; --c-deadline:#a3003a; --c-refill:#237a43; --c-sample:#0e7c86;
+    --c-newbie:#2b6fb0; --c-catalog:#1f64a8; --c-noreply:#6a5f64; --c-festival:#b8430f; --c-winback:#8a4b08;
+    --c-dormant:#6d6466; --c-general:#8a5a6e;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#171214; --surface:#221a1d; --surface-2:#2e2428; --line:#3c2f34;
+  --text:#f7eef1; --muted:#bdabb2; --brand:#ff5c8a; --brand-2:#ff8aac; --brand-soft:#3a1824; --brand-fill:#c8003f; --brand-fill-2:#c8003f; --bar-soft:#5c2539;
+  --gold:#ff8aac; --ok:#5fd394; --ok-soft:#173528; --warn:#f2b555; --warn-soft:#3a2b14; --shadow:0 2px 12px rgba(0,0,0,.35);
+  --c-birthday:#c8003f; --c-followup:#9a5a00; --c-deadline:#a3003a; --c-refill:#237a43; --c-sample:#0e7c86;
+  --c-newbie:#2b6fb0; --c-catalog:#1f64a8; --c-noreply:#6a5f64; --c-festival:#b8430f; --c-winback:#8a4b08;
+  --c-dormant:#6d6466; --c-general:#8a5a6e;
+}
+:root.big{--fs:20px}
+.camp{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--brand);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow)}
+.camp.urgent{border-left-color:var(--warn);background:var(--warn-soft)}
+.camp .e{font-size:1.6rem}
+.camp .grow{flex:1;min-width:0;font-size:.92rem;line-height:1.5}
+.camp{flex-wrap:wrap}
+.camp .col{display:flex;gap:8px;width:100%}
+.camp .col .btn{flex:1}
+.risk{background:var(--warn-soft);border:1px solid var(--warn);border-radius:14px;padding:12px 14px;margin-top:10px;font-size:.88rem}
+.risk p{margin:6px 0 0}
+*{box-sizing:border-box}
+html{font-size:var(--fs);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Lato","PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.55;min-height:100vh;overscroll-behavior-y:contain}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--brand)}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px calc(96px + env(safe-area-inset-bottom))}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(10px + env(safe-area-inset-top)) 16px 8px;border-bottom:1px solid transparent}
+header.top.scrolled{border-color:var(--line)}
+.top-in{max-width:640px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.top-in img{width:36px;height:36px;border-radius:4px}
+.top-in .t{flex:1;min-width:0}
+.top-in .t b{display:block;font-size:1.05rem;line-height:1.2}
+.top-in .t small{color:var(--muted);font-size:.8rem}
+.icon-btn{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;font-size:1.15rem}
+.view{display:none;padding-top:6px}
+.view.on{display:block}
+h2{font-size:1.25rem;margin:18px 0 10px}
+h3{font-size:1.02rem;margin:18px 0 8px}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.stack>*+*{margin-top:12px}
+.hero{background:linear-gradient(135deg,var(--brand-fill),var(--brand-fill-2));color:#fff;border:none;display:flex;gap:16px;align-items:center}
+.hero h1{font-size:1.3rem;margin:0 0 4px;line-height:1.3}
+.hero p{margin:0;opacity:.92;font-size:.92rem}
+.ring{flex:none;width:76px;height:76px;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:1.05rem;color:#fff}
+.banner{display:flex;gap:12px;align-items:center;background:var(--warn-soft);border:1px solid transparent;color:var(--text);border-radius:14px;padding:12px 14px;font-size:.9rem}
+.banner .grow{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 18px;border-radius:14px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:1rem;text-decoration:none;color:var(--text)}
+.btn.primary{background:var(--brand-fill);border-color:var(--brand-fill);color:#fff}
+.btn.line{background:var(--line-green);border-color:var(--line-green);color:#fff}
+.btn.ghost{background:transparent}
+.btn.sm{min-height:40px;padding:0 12px;font-size:.88rem;border-radius:11px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>.btn{flex:1 1 0;padding:0 10px}
+.btn{white-space:nowrap}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.task{display:flex;gap:12px;align-items:center;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);width:100%;text-align:left}
+.task+.task{margin-top:10px}
+.avatar{flex:none;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:1.1rem;color:#fff;background:var(--c-general)}
+.task .mid{flex:1;min-width:0}
+.task .name{font-weight:700;font-size:1.05rem}
+.task .why{color:var(--muted);font-size:.88rem;margin-top:2px}
+.task .go{flex:none;background:var(--brand-fill);color:#fff;border-radius:12px;padding:10px 14px;font-weight:700;font-size:.9rem}
+.task.done{opacity:.85;box-shadow:none}
+.task.done .go{background:var(--ok-soft);color:var(--ok)}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;color:#fff;background:var(--c-general);vertical-align:2px;white-space:nowrap}
+.chip.soft{background:var(--surface-2);color:var(--muted)}
+.vip{color:var(--gold);font-size:.9rem}
+.more-toggle{width:100%;margin-top:10px}
+.empty{text-align:center;padding:28px 16px}
+.empty .big{font-size:2.6rem}
+.search{width:100%;min-height:52px;border-radius:14px;border:1px solid var(--line);background:var(--surface);padding:0 16px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none}
+.chips button{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:.9rem}
+.chips button.on{background:var(--brand-fill);border-color:var(--brand-fill);color:#fff}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px}
+.stat b{display:block;font-size:1.6rem;line-height:1.2}
+.stat span{color:var(--muted);font-size:.85rem}
+.bars{display:flex;align-items:flex-end;gap:8px;height:150px;padding-top:10px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bar .col{width:100%;max-width:38px;border-radius:8px 8px 4px 4px;background:var(--bar-soft);position:relative;overflow:hidden;min-height:3px}
+.bar .col i{position:absolute;left:0;right:0;bottom:0;background:var(--brand-fill)}
+.bar small{font-size:.72rem;color:var(--muted)}
+.bar em{font-style:normal;font-size:.78rem;font-weight:700}
+.legend{display:flex;gap:16px;font-size:.8rem;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.hbar{display:grid;grid-template-columns:7.2em 1fr 3.4em;gap:10px;align-items:center;font-size:.88rem}
+.hbar+.hbar{margin-top:8px}
+.hbar .track{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.hbar .track i{display:block;height:100%;border-radius:6px}
+.list-item{display:flex;gap:12px;align-items:center;padding:12px 4px;border-bottom:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left}
+.list-item:last-child{border-bottom:0}
+.list-item .mid{flex:1;min-width:0}
+.list-item .avatar{width:42px;height:42px;font-size:1rem}
+.menu a,.menu button{display:flex;align-items:center;gap:12px;width:100%;padding:14px 4px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;text-decoration:none;color:var(--text);font-size:1rem}
+.menu>*:last-child{border-bottom:0}
+.menu .ic{width:36px;height:36px;border-radius:10px;background:var(--brand-soft);display:grid;place-items:center;flex:none}
+.menu .grow{flex:1}
+.switch{position:relative;width:52px;height:32px;flex:none}
+.switch input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.switch span{position:absolute;inset:0;border-radius:999px;background:var(--line);transition:.2s}
+.switch span::after{content:"";position:absolute;width:26px;height:26px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch input:checked+span{background:var(--brand-fill)}
+.switch input:checked+span::after{transform:translateX(20px)}
+.switch input:focus-visible+span{outline:3px solid var(--brand-2);outline-offset:2px}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 0 8px;text-decoration:none;color:var(--muted);font-size:.78rem;font-weight:600;position:relative}
+nav.tabs a .e{font-size:1.4rem;line-height:1.1;filter:grayscale(.6);opacity:.8}
+nav.tabs a.on{color:var(--brand)}
+nav.tabs a.on .e{filter:none;opacity:1}
+nav.tabs .badge[hidden]{display:none}
+nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px);min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--brand-fill);color:#fff;font-size:.72rem;display:grid;place-items:center}
+
+.sheet{position:fixed;inset:0;z-index:20;background:rgba(30,10,18,.45);display:none;align-items:flex-end;justify-content:center}
+.sheet.on{display:flex}
+.sheet-card{background:var(--bg);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:8px 16px calc(24px + env(safe-area-inset-bottom));animation:up .22s ease-out}
+html.demo .sheet-card,html.demo .toast{animation:none;transition:none}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 6px}
+.sheet-head{display:flex;align-items:center;gap:12px;padding:6px 0 4px;position:sticky;top:-8px;background:var(--bg);z-index:1}
+.sheet-head h2{margin:0;flex:1;font-size:1.15rem}
+.step{display:flex;gap:10px;align-items:center;font-weight:700;margin:18px 0 8px}
+.step .n{width:28px;height:28px;border-radius:50%;background:var(--brand-fill);color:#fff;display:grid;place-items:center;font-size:.9rem;flex:none}
+textarea.msg{width:100%;min-height:150px;border-radius:14px;border:1px solid var(--line);background:var(--surface);padding:14px;line-height:1.65;resize:vertical}
+.seg{display:flex;background:var(--surface-2);border-radius:12px;padding:3px;gap:3px}
+.seg button{flex:1;min-height:40px;border:0;border-radius:9px;background:transparent;font-size:.9rem;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--surface);color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.result-grid button{min-height:64px;border-radius:14px;border:1px solid var(--line);background:var(--surface);font-weight:700;font-size:1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.result-grid button span{font-size:1.4rem;line-height:1}
+.result-grid button.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand)}
+.field{display:block;margin-top:12px}
+.field>span{display:block;font-size:.88rem;font-weight:600;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;min-height:50px;border-radius:12px;border:1px solid var(--line);background:var(--surface);padding:10px 14px}
+.field textarea{min-height:80px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.check{display:flex;gap:10px;align-items:center;margin-top:14px;font-weight:600}
+.check input{width:24px;height:24px;accent-color:var(--brand)}
+.timeline{border-left:2px solid var(--line);margin-left:8px;padding-left:16px}
+.timeline .ev{position:relative;padding:6px 0 10px;font-size:.9rem}
+.timeline .ev::before{content:"";position:absolute;left:-23px;top:12px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--brand)}
+.timeline .ev.buy::before{background:var(--brand-fill)}
+.kv{display:grid;grid-template-columns:5em 1fr;gap:6px 10px;font-size:.92rem}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#2b1d22;color:#fff;padding:12px 18px;border-radius:14px;font-size:.92rem;opacity:0;pointer-events:none;transition:.25s;z-index:40;width:max-content;max-width:calc(100% - 32px);display:flex;gap:12px;align-items:center}
+.toast.on{opacity:1;transform:translateX(-50%);pointer-events:auto}
+.toast button{background:none;border:0;color:#ffb3d1;font-weight:700;padding:4px}
+.tip{background:var(--brand-soft);border-radius:14px;padding:12px 14px;font-size:.9rem}
+.steps-guide{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps-guide li{counter-increment:s;display:flex;gap:12px;padding:10px 0}
+.steps-guide li::before{content:counter(s);flex:none;width:30px;height:30px;border-radius:50%;background:var(--brand-fill);color:#fff;display:grid;place-items:center;font-weight:700}
+.celebrate{text-align:center;padding:22px 12px}
+.celebrate .big{font-size:3rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+:focus-visible{outline:3px solid var(--brand-2);outline-offset:2px}
+@media (min-width:900px){
+  .wrap{max-width:980px}
+  .top-in{max-width:980px}
+  .desk{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:start}
+}
+</style>
+</head>
+<body>
+<header class="top" id="top">
+  <div class="top-in">
+    <img src="icons/logo-64.png" alt="AVON">
+    <div class="t"><b>雅芳銷售小幫手</b><small id="todayLabel"></small></div>
+    <button class="icon-btn" id="helpBtn" aria-label="怎麼用">❔</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="view" id="v-today"></section>
+  <section class="view" id="v-customers"></section>
+  <section class="view" id="v-results"></section>
+  <section class="view" id="v-more"></section>
+</main>
+
+<nav class="tabs" aria-label="主要功能">
+  <div class="in">
+    <a href="#today" data-tab="today"><span class="e">☀️</span>今天<span class="badge" id="badge" hidden></span></a>
+    <a href="#customers" data-tab="customers"><span class="e">👥</span>顧客</a>
+    <a href="#results" data-tab="results"><span class="e">📈</span>業績</a>
+    <a href="#more" data-tab="more"><span class="e">⚙️</span>更多</a>
+  </div>
+</nav>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet-card" id="sheetCard"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* ---------- 小工具 ---------- */
+const KEY = 'spca-data-v1';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parse = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return ymd(d); };
+const diff = (a, b) => Math.round((parse(b) - parse(a)) / 864e5); // b − a（天）
+const today = () => ymd(new Date());
+const md = s => { const d = parse(s); return `${d.getMonth() + 1}/${d.getDate()}`; };
+const money = n => '$' + Math.round(n || 0).toLocaleString('zh-TW');
+const uid = () => Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
+const WEEK = ['日', '一', '二', '三', '四', '五', '六'];
+const callName = c => c.nick || (c.name.length >= 3 ? c.name.slice(1) : c.name);
+
+/* ---------- 雅芳品類 ---------- */
+// 週期是預設的「大約多久用完」，使用者每筆都可以改
+const CATS = [
+  { k: 'hair', label: '髮品', emoji: '💆‍♀️', cycle: 45, re: /洗髮|潤髮|護髮|髮|頭皮/ },
+  { k: 'intimate', label: '私密潔浴', emoji: '🌸', cycle: 30, re: /私密|潔浴|沐浴|浴/ },
+  { k: 'deo', label: '體香／制汗', emoji: '🌿', cycle: 30, re: /體香|止汗|制汗|滾珠|爽身/ },
+  { k: 'skin', label: '臉部保養', emoji: '✨', cycle: 60, re: /精華|乳液|乳霜|面霜|化妝水|洗面|洗顏|眼霜|面膜|防曬|保養|卸妝/ },
+  { k: 'fragrance', label: '香水香氛', emoji: '🌹', cycle: 90, re: /香水|香氛|淡香|古龍/ },
+  { k: 'makeup', label: '彩妝', emoji: '💄', cycle: 90, re: /口紅|唇|粉底|粉餅|眼影|睫毛|眼線|腮紅|眉|彩妝|遮瑕/ },
+  { k: 'health', label: '保健食品', emoji: '🌾', cycle: 30, re: /膠囊|錠|保健|益生菌|維他命|維生素|魚油|膠原/ },
+  { k: 'other', label: '其他', emoji: '🛍️', cycle: 0, re: /$^/ },
+];
+const catOf = k => CATS.find(c => c.k === k) || CATS[CATS.length - 1];
+const guessCat = name => (CATS.find(c => c.re.test(name || '')) || CATS[CATS.length - 1]).k;
+const matchCat = text => { text = (text || '').trim(); if (!text) return ''; const c = CATS.find(x => x.label.includes(text) || text.includes(x.label.split('／')[0])); return c ? c.k : guessCat(text); };
+const pLabel = p => p.product || catOf(p.cat).label;
+const catSelect = (attrs, sel) => `<select ${attrs}>${CATS.map(k => `<option value="${k.k}" ${k.k === sel ? 'selected' : ''}>${k.emoji} ${k.label}</option>`).join('')}</select>`;
+// 回購話術裡的一句品類貼心話（避免療效用語）
+const CAT_TIP = {
+  hair: '換季了頭髮也要好好照顧，', intimate: '天氣變化，日常清潔更要溫和，', deo: '天氣悶熱出門要清爽，',
+  skin: '保養最怕中斷，', fragrance: '換個季節也可以換個香味心情，', makeup: '', health: '日常保養別中斷，', other: '',
+};
+
+/* ---------- 關懷原因 ---------- */
+const REASONS = {
+  birthday: { label: '生日祝福', emoji: '🎂' },
+  followup: { label: '約好再聯絡', emoji: '📅' },
+  deadline: { label: '訂貨截止', emoji: '⏰' },
+  refill:   { label: '該回購囉', emoji: '🧴' },
+  sample:   { label: '試用回訪', emoji: '🎁' },
+  newbie:   { label: '首購關心', emoji: '🌱' },
+  catalog:  { label: '新型錄上架', emoji: '🆕' },
+  noreply:  { label: '再問一次', emoji: '🔁' },
+  festival: { label: '節慶送禮', emoji: '💐' },
+  winback:  { label: '喚回老顧客', emoji: '💌' },
+  dormant:  { label: '好久不見', emoji: '👋' },
+  general:  { label: '日常問候', emoji: '😊' },
+};
+const RESULTS = {
+  sent:    { label: '已傳送，待記結果', emoji: '📤' },
+  replied: { label: '有回覆', emoji: '💬' },
+  ordered: { label: '有訂貨', emoji: '🛍️' },
+  noreply: { label: '還沒回', emoji: '😶' },
+  later:   { label: '改天再聯絡', emoji: '📅' },
+};
+const CYCLES = [[0, '不固定'], [14, '約 2 週'], [30, '約 1 個月'], [45, '約 1 個半月'], [60, '約 2 個月'], [90, '約 3 個月']];
+const TONES = { warm: '姐妹聊天', pro: '正式有禮', short: '一句就好' };
+
+/* 話術：{c}稱呼 {p}產品 {me}署名 {no}期別 {dl}截止日 {hl}本期主打 {s}試用品 {fest}節日 {tip}品類貼心話 */
+const TEMPLATES = {
+  birthday: {
+    warm: ['{c}生日快樂🎂！祝你新的一歲越來越美、天天開心～謝謝你一直以來的支持，我準備了一份小心意，方便的時候跟我說喔！',
+           '{c}～今天是你的生日對吧🎉 祝你生日快樂、健康美麗！有空一起喝杯咖啡吧😊'],
+    pro:   ['{c}您好，祝您生日快樂！感謝您長期的支持，祝您新的一年平安順心、美麗自信。'],
+    short: ['{c}生日快樂🎂 天天美麗開心！'],
+  },
+  followup: {
+    warm: ['{c}～上次說好再跟你聯絡，最近方便嗎？想跟你分享這期的好東西，看看你需不需要😊',
+           '{c}你好～我是{me}，之前你說這陣子比較忙，現在有空聊一下嗎？不急，方便再回我就好～'],
+    pro:   ['{c}您好，依照上次的約定與您聯繫。本期有幾項商品想為您介紹，請問您什麼時間方便呢？'],
+    short: ['{c}～上次約好再聯絡，現在方便嗎？😊'],
+  },
+  deadline: {
+    warm: ['{c}～提醒你一下，這期訂貨到 {dl} 截止喔！要補什麼跟我說，我一起幫你訂，省得之後又要等😊',
+           '{c}～{no}快截止囉（{dl}），上次的{p}還夠用嗎？需要的話我幫你一起訂～'],
+    pro:   ['{c}您好，提醒您{no}訂貨將於 {dl} 截止，若有需要補充的商品，歡迎告訴我，我為您一併處理。'],
+    short: ['{c}～這期 {dl} 截止，要幫你訂什麼嗎？'],
+  },
+  catalog: {
+    warm: ['{c}～雅芳{no}型錄出來囉！這期{hl}，我覺得很適合你，先傳給你看看😊 有喜歡的跟我說～',
+           '{c}早安～新一期型錄剛上架，我先幫你挑了幾樣你可能會喜歡的，有空翻翻看，有問題隨時問我喔！'],
+    pro:   ['{c}您好，雅芳{no}型錄已上架，本期{hl}，提供給您參考，如有需要歡迎與我聯繫。'],
+    short: ['{c}～{no}新型錄來了！這期{hl}，要看看嗎？'],
+  },
+  refill: {
+    warm: ['{c}～算算時間，上次的{p}應該快用完了吧？{tip}要不要我這期先幫你訂一份？😊',
+           '{c}早安～{p}用得還順手嗎？差不多到回購的時間了，需要的話跟我說，我幫你準備好～'],
+    pro:   ['{c}您好，您先前購買的{p}預計近期使用完畢，若需要回購，我可以在本期為您一併訂購。'],
+    short: ['{c}～{p}快用完了嗎？這期幫你訂一份？'],
+  },
+  sample: {
+    warm: ['{c}～上次給你的{s}用得怎麼樣？喜歡嗎？有什麼感覺都可以跟我說喔😊',
+           '{c}～{s}用了幾天，覺得適合嗎？如果喜歡，這期剛好可以幫你訂正貨～'],
+    pro:   ['{c}您好，想請教您{s}試用後的感受，若有任何問題或需要正貨，歡迎與我聯繫。'],
+    short: ['{c}～{s}試用還喜歡嗎？😊'],
+  },
+  newbie: {
+    warm: ['{c}～謝謝你上次的支持！{p}用了幾天感覺怎麼樣？有沒有哪裡不習慣？我教你一些使用小撇步～',
+           '{c}你好～{p}用起來還喜歡嗎？使用上有任何問題都可以問我喔😊'],
+    pro:   ['{c}您好，感謝您選購{p}，想了解您這幾天的使用感受，若有任何問題歡迎隨時詢問我。'],
+    short: ['{c}～{p}用起來還喜歡嗎？'],
+  },
+  noreply: {
+    warm: ['{c}～不好意思再打擾一下，前幾天傳的訊息不知道有沒有看到？不急喔，有空再回我就好😊',
+           '{c}～最近應該很忙吧！上次的訊息你有空再看就好，祝你這週順順利利～'],
+    pro:   ['{c}您好，前幾天傳給您的訊息不知道是否方便查看？不急，您有空時再回覆即可，謝謝。'],
+    short: ['{c}～前幾天的訊息有看到嗎？有空再回我就好😊'],
+  },
+  festival: {
+    warm: ['{c}～{fest}快到了！今年要送禮的話，我這邊有幾款禮盒很受歡迎，包裝也漂亮，要不要先幫你看看？🎁',
+           '{c}～{fest}要到囉，有沒有想寵愛自己或送給重要的人？我幫你挑幾樣適合的😊'],
+    pro:   ['{c}您好，{fest}將至，本期有多款適合送禮的組合，若有需要，我很樂意為您推薦。'],
+    short: ['{c}～{fest}快到了，要看看送禮組合嗎？🎁'],
+  },
+  winback: {
+    warm: ['{c}～好久不見！最近雅芳有新的組合，想到你之前很喜歡{p}，特別跟你說一聲，有興趣我再傳給你看～',
+           '{c}～好久沒跟你聊了，最近好嗎？這期有幾樣新品很適合你，想先聽聽你最近的需要😊'],
+    pro:   ['{c}您好，好久不見。雅芳近期推出新的商品組合，想到您之前使用{p}的經驗，特別與您分享。'],
+    short: ['{c}～好久不見！這期有新組合，要看看嗎？'],
+  },
+  dormant: {
+    warm: ['{c}～好久沒聊了，最近還好嗎？天氣變化大要多保重喔！有需要什麼隨時跟我說～',
+           '{c}～突然想到你，來打聲招呼😊 最近過得好嗎？'],
+    pro:   ['{c}您好，好久沒有與您聯繫，近來一切都好嗎？若有任何需要，歡迎隨時與我聯絡。'],
+    short: ['{c}～好久不見，最近好嗎？😊'],
+  },
+  general: {
+    warm: ['{c}～最近好嗎？想到你就來打個招呼😊 有什麼需要隨時跟我說喔！'],
+    pro:   ['{c}您好，近來一切都好嗎？若有任何需要，歡迎隨時與我聯繫。'],
+    short: ['{c}～最近好嗎？😊'],
+  },
+};
+
+/* ---------- 合規用詞提醒（提醒性質，正式上線前請法務確認詞庫） ---------- */
+const RISK = [
+  { re: /治療|治癒|根治|療效|醫治|消炎|抗發炎|預防.{0,4}(疾病|癌)|抗癌|防癌|降(血壓|血糖|血脂|膽固醇)|改善.{0,3}(體質|疾病|失眠|便秘)|排毒|殺菌|處方/g,
+    ex: '治療、根治、消炎、抗癌、降血糖、排毒', why: '醫療效能用語：化粧品和一般食品都不能宣稱療效', fix: '改說使用感受，例如「用起來很舒服」「很多姐妹回購」' },
+  { re: /減肥|瘦身|燃脂|消脂|甩肉|增高|豐胸|生髮|長頭髮|防止掉髮|除皺|消除皺紋|永久|根除/g,
+    ex: '減肥、瘦身、豐胸、生髮、除皺、永久', why: '誇大或涉及改變身體機能的用語', fix: '改說「日常保養」「清爽」「滋潤」這類感受' },
+  { re: /保證|百分之百|100%|絕對|最有效|第一名|無副作用|零風險|立即見效|馬上見效/g,
+    ex: '保證、百分之百、絕對、最有效、無副作用', why: '保證或絕對性用語，容易被認定誇大不實', fix: '改說「我自己用很喜歡」「可以先試用看看」' },
+  { re: /月入|輕鬆賺|穩賺|躺著賺|被動收入|保證收入|財富自由|日領|高收入/g,
+    ex: '月入、輕鬆賺、穩賺、被動收入、財富自由', why: '招募時暗示收入，違反多層次傳銷相關規範', fix: '分享「認識新朋友、學美容知識」，不談收入' },
+];
+function riskCheck(text) {
+  const hits = [];
+  for (const r of RISK) { const m = [...new Set(String(text || '').match(r.re) || [])]; if (m.length) hits.push({ words: m, why: r.why, fix: r.fix }); }
+  return hits;
+}
+const riskHTML = hits => hits.length ? `<div class="risk"><b>⚠️ 用詞提醒</b>${hits.map(h => `<p>「${h.words.map(esc).join('、')}」：${esc(h.why)}<br><span class="muted">建議：${esc(h.fix)}</span></p>`).join('')}</div>` : '';
+
+/* ---------- 節慶（農曆節日先寫好 2026–2028） ---------- */
+const nthSunday = (y, m, n) => { const d = new Date(y, m - 1, 1); return ymd(new Date(y, m - 1, 1 + (7 - d.getDay()) % 7 + (n - 1) * 7)); };
+const LUNAR = { 2026: { cny: '2026-02-17', qixi: '2026-08-19', moon: '2026-09-25' }, 2027: { cny: '2027-02-06', qixi: '2027-08-08', moon: '2027-09-15' }, 2028: { cny: '2028-01-26', qixi: '2028-08-26', moon: '2028-10-03' } };
+function festivals(y) {
+  const L = LUNAR[y] || {};
+  return [['情人節', `${y}-02-14`], ['婦女節', `${y}-03-08`], ['母親節', nthSunday(y, 5, 2)], ['父親節', `${y}-08-08`], ['聖誕節', `${y}-12-25`],
+    ...(L.cny ? [['農曆新年', L.cny]] : []), ...(L.qixi ? [['七夕情人節', L.qixi]] : []), ...(L.moon ? [['中秋節', L.moon]] : [])];
+}
+function upcomingFestival(t) {
+  const y = parse(t).getFullYear();
+  return [...festivals(y), ...festivals(y + 1)].map(([n, d]) => ({ n, d, k: diff(t, d) })).filter(f => f.k >= 3 && f.k <= 14).sort((a, b) => a.k - b.k)[0] || null;
+}
+
+/* ---------- 資料 ---------- */
+const params = new URLSearchParams(location.search);
+const demo = params.get('demo');
+let state;
+const blank = () => ({ v: 1, profile: { me: '', tone: 'warm', big: true, daily: 5, onboarded: false, practice: false, theme: 'auto', campaign: null }, customers: [] });
+function load() {
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.customers)) return { ...blank(), ...s, profile: { ...blank().profile, ...s.profile } }; } catch (e) { /* 私密視窗等 */ }
+  return blank();
+}
+function save() {
+  if (demo) return;
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { toast('這台裝置目前無法儲存資料，請改用一般瀏覽模式'); }
+}
+const byId = id => state.customers.find(c => c.id === id);
+
+function sampleCustomers() {
+  const t = today(), d = n => addDays(t, n);
+  const bd = n => { const x = parse(d(n)); return `${pad(x.getMonth() + 1)}-${pad(x.getDate())}`; };
+  const mk = (name, o = {}) => ({
+    id: uid(), name, nick: o.nick || '', phone: o.phone || '', birthday: o.bd || '', vip: !!o.vip, note: o.note || '', followUp: o.fu != null ? d(o.fu) : '',
+    purchases: (o.p || []).map(([dd, cat, product, amount, cycle]) => ({ id: uid(), date: d(dd), cat, product, amount, cycle: cycle ?? catOf(cat).cycle })),
+    contacts: (o.c || []).map(([dd, reason, result, amount, channel]) => ({ id: uid(), date: d(dd), reason, result, amount: amount || 0, channel: channel || 'line' })),
+    samples: (o.s || []).map(([dd, item]) => ({ id: uid(), date: d(dd), item })),
+  });
+  return [
+    mk('林美惠', { nick: '美惠姐', bd: bd(0), vip: true, phone: '0912-000-101', note: '喜歡保養，常幫同事一起訂', p: [[-80, 'skin', '保濕精華液', 1680], [-40, 'skin', '保濕精華液', 1680]], c: [[-41, 'refill', 'ordered', 1680]] }),
+    mk('王小玲', { fu: 0, phone: '0912-000-102', p: [[-50, 'makeup', '口紅禮盒', 1250]], c: [[-6, 'dormant', 'later']] }),
+    mk('陳淑芬', { phone: '0912-000-103', p: [[-87, 'hair', '洗髮精', 590], [-42, 'hair', '洗髮精', 590]] }),
+    mk('李佩君', { vip: true, phone: '0912-000-104', p: [[-62, 'skin', '保濕乳霜', 980]], c: [[-55, 'newbie', 'replied']] }),
+    mk('吳家瑜', { bd: bd(4), phone: '0912-000-105', p: [[-100, 'fragrance', '淡香水', 1500]], c: [[-30, 'general', 'replied']] }),
+    mk('林雅芬', { phone: '0912-000-117', p: [[-65, 'deo', '制汗劑', 320], [-35, 'deo', '制汗劑', 320]] }),
+    mk('張雅婷', { nick: '雅婷', phone: '0912-000-109', p: [[-9, 'deo', '體香滾珠', 350]], c: [[-8, 'newbie', 'replied']], s: [[-3, '私密潔浴試用包']] }),
+    mk('黃怡君', { phone: '0912-000-106', p: [[-15, 'health', '保健膠囊', 1200]], c: [[-5, 'newbie', 'noreply']] }),
+    mk('蔡宜蓁', { phone: '0912-000-107', p: [[-4, 'skin', '洗面乳', 450]] }),
+    mk('周佳蓉', { phone: '0912-000-115', vip: true, p: [[-90, 'fragrance', '香水', 1500], [-25, 'makeup', '口紅', 650]], c: [[-60, 'general', 'replied']] }),
+    mk('劉素珍', { phone: '0912-000-108', p: [[-260, 'skin', '保濕精華液', 1680], [-200, 'skin', '眼霜', 1350]], c: [[-150, 'winback', 'replied']] }),
+    mk('楊惠雯', { phone: '0912-000-110', p: [[-63, 'health', '保健膠囊', 1200], [-33, 'health', '保健膠囊', 1200], [-2, 'health', '保健膠囊', 1200]], c: [[-2, 'refill', 'ordered', 1200]] }),
+    mk('許文華', { phone: '0912-000-111', p: [[-20, 'intimate', '私密潔浴露', 420]], c: [[-16, 'newbie', 'replied'], [-1, 'catalog', 'replied']] }),
+    mk('鄭安琪', { nick: '安琪', phone: '0912-000-112', p: [[-31, 'hair', '洗髮精', 590], [0, 'hair', '洗髮精', 1180]], c: [[0, 'refill', 'ordered', 1180]] }),
+    mk('謝秀英', { phone: '0912-000-113', p: [[-70, 'skin', '保濕精華液', 1680], [-4, 'skin', '保濕精華液', 1680]], c: [[-11, 'refill', 'noreply'], [-4, 'refill', 'ordered', 1680]] }),
+    mk('郭芳如', { phone: '0912-000-114', p: [[-120, 'skin', '洗面乳', 450]], c: [[-48, 'general', 'noreply'], [-3, 'dormant', 'replied']] }),
+    mk('蘇怡萱', { phone: '0912-000-116', p: [[-6, 'health', '保健膠囊', 1200]], c: [[-5, 'newbie', 'replied']] }),
+  ];
+}
+const practiceCampaign = () => ({ no: 22, start: addDays(today(), -1), deadline: addDays(today(), 3), cycle: 14, highlight: '保濕系列與髮品有組合優惠', link: '' });
+
+/* ---------- 規則：誰今天該被關心 ---------- */
+function daysToBirthday(mmdd, t) {
+  const [m, d] = mmdd.split('-').map(Number);
+  const y = parse(t).getFullYear();
+  let b = new Date(y, m - 1, d);
+  if (b < parse(t)) b = new Date(y + 1, m - 1, d);
+  return diff(t, ymd(b));
+}
+const sortDate = arr => [...arr].sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+
+/* 本期型錄：設定了「每幾天一期」就自動往下一期跳 */
+function campaign(t = today()) {
+  const p = state.profile.campaign;
+  if (!p || !p.deadline) return null;
+  const c = { ...p };
+  let rolled = false;
+  while (c.cycle > 0 && t > c.deadline) { c.start = addDays(c.deadline, 1); c.deadline = addDays(c.deadline, c.cycle); c.no = (+c.no || 0) + 1; rolled = true; }
+  if (rolled) { c.highlight = ''; state.profile.campaign = c; save(); } // 換期後舊的主打不再適用
+  return { ...c, expired: t > c.deadline, daysLeft: diff(t, c.deadline), dayIn: diff(c.start, t) };
+}
+let ctxCache = {};
+function ctx(t) {
+  if (ctxCache.t !== t || ctxCache.v !== state.profile.campaign) { const camp = campaign(t); ctxCache = { t, v: state.profile.campaign, camp, fest: upcomingFestival(t) }; }
+  return ctxCache;
+}
+
+function signal(c, t = today()) {
+  const { camp, fest } = ctx(t);
+  const P = sortDate(c.purchases), C = sortDate(c.contacts), S = sortDate(c.samples || []);
+  const lastP = P[P.length - 1], lastC = C[C.length - 1];
+  const sinceC = lastC ? diff(lastC.date, t) : 999;
+  const sinceP = lastP ? diff(lastP.date, t) : 999;
+  const contactedSince = day => C.some(x => x.date >= day);
+  const out = [];
+
+  if (c.followUp && c.followUp <= t)
+    out.push({ r: 'followup', s: 95, why: c.followUp === t ? '你約好今天再聯絡' : `約好 ${md(c.followUp)} 再聯絡，已經過了 ${diff(c.followUp, t)} 天` });
+  if (c.birthday && /^\d{2}-\d{2}$/.test(c.birthday)) {
+    const n = daysToBirthday(c.birthday, t);
+    if (n <= 7 && !C.some(x => x.reason === 'birthday' && diff(x.date, t) <= 10))
+      out.push({ r: 'birthday', s: n === 0 ? 100 : 88 - n * 2, why: n === 0 ? '今天生日 🎂 送上祝福' : `${n} 天後生日（${c.birthday.replace('-', '/')}），先預約祝福` });
+  }
+  // 型錄節奏：截止前提醒熟客、上架時分享給近半年有買的顧客
+  if (camp && !camp.expired && sinceC >= 2 && sinceP <= 180) {
+    const orderedThis = P.some(p => p.date >= camp.start) || C.some(x => x.date >= camp.start && x.result === 'ordered');
+    if (!orderedThis && camp.daysLeft <= 3 && (P.length >= 2 || c.vip) && !C.some(x => x.date >= camp.start && x.reason === 'deadline'))
+      out.push({ r: 'deadline', s: 76 + (3 - camp.daysLeft) * 3, why: camp.daysLeft === 0 ? `第 ${camp.no} 期今天截止，問問要不要一起訂` : `第 ${camp.no} 期 ${md(camp.deadline)} 截止，還有 ${camp.daysLeft} 天` });
+    if (camp.dayIn >= 0 && camp.dayIn <= 3 && !contactedSince(camp.start))
+      out.push({ r: 'catalog', s: 70 + (c.vip ? 6 : 0), why: `第 ${camp.no} 期型錄剛上架，分享給顧客看看` });
+  }
+  if (sinceC >= 3) {
+    if (lastC && lastC.result === 'noreply' && sinceC <= 14) {
+      let k = 0; for (let i = C.length - 1; i >= 0 && C[i].result === 'noreply'; i--) k++;
+      if (k < 3) out.push({ r: 'noreply', s: 60, why: `${sinceC} 天前的訊息還沒回覆，輕輕再問一次` });
+    }
+    const ls = S[S.length - 1];
+    if (ls) {
+      const k = diff(ls.date, t);
+      if (k >= 2 && k <= 7 && !contactedSince(ls.date)) out.push({ r: 'sample', s: 74, why: `${k} 天前送了${ls.item}，問問試用感受`, item: ls.item });
+    }
+    if (P.length === 1) {
+      const k = diff(P[0].date, t);
+      if (k >= 3 && k <= 14 && !contactedSince(P[0].date))
+        out.push({ r: 'newbie', s: 72, why: `${k} 天前第一次買${pLabel(P[0])}，問問使用感受`, p: pLabel(P[0]), cat: P[0].cat });
+    }
+    // 每個品類看最近一次購買，挑最接近用完的那一樣
+    const latest = {};
+    P.forEach(p => { latest[p.cat || 'other'] = p; });
+    let best = null;
+    Object.values(latest).forEach(p => {
+      if (!(p.cycle > 0)) return;
+      const due = addDays(p.date, p.cycle), dd = diff(t, due);
+      if (dd <= 7 && dd >= -21 && !contactedSince(addDays(due, -10)) && (!best || Math.abs(dd) < Math.abs(best.dd))) best = { p, dd };
+    });
+    if (best) {
+      const n = pLabel(best.p), dd = best.dd;
+      out.push({ r: 'refill', s: 84 - Math.abs(dd), why: dd > 0 ? `${n}大約 ${dd} 天後用完` : dd === 0 ? `${n}差不多今天用完` : `${n}應該已經用完 ${-dd} 天了`, p: n, cat: best.p.cat });
+    }
+    if (lastP) {
+      const lim = Math.max((lastP.cycle || 45) * 2, 90);
+      if (sinceP >= lim && sinceC >= 30) out.push({ r: 'winback', s: 55 + (c.vip ? 10 : 0), why: `已經 ${sinceP} 天沒有訂貨了`, p: pLabel(lastP), cat: lastP.cat });
+    }
+    const base = lastC ? lastC.date : lastP ? lastP.date : null;
+    if (base && diff(base, t) >= 45 && sinceC >= 45) out.push({ r: 'dormant', s: 45 + (c.vip ? 15 : 0), why: `已經 ${diff(base, t)} 天沒有聯絡了` });
+    if (fest && sinceP <= 365 && sinceC >= 7 && !C.some(x => x.reason === 'festival' && diff(x.date, t) <= 20))
+      out.push({ r: 'festival', s: 48 + (c.vip ? 12 : 0), why: `${fest.n}（${md(fest.d)}）快到了，推薦送禮組合`, fest: fest.n });
+  }
+  if (!out.length) return null;
+  out.sort((a, b) => b.s - a.s);
+  return out[0];
+}
+
+function plan() {
+  const t = today(), done = [], todo = [];
+  for (const c of state.customers) {
+    const ct = c.contacts.filter(x => x.date === t);
+    if (ct.length) { done.push({ c, x: ct[ct.length - 1] }); continue; }
+    const s = signal(c, t);
+    if (s) todo.push({ c, ...s });
+  }
+  todo.sort((a, b) => b.s - a.s || (b.c.vip - a.c.vip));
+  return { done, todo };
+}
+
+function buildMessage(c, f) {
+  const set = (TEMPLATES[f.reason] || TEMPLATES.general)[f.tone] || TEMPLATES.general.warm;
+  const camp = campaign();
+  const vars = {
+    c: callName(c), p: f.p, me: state.profile.me || '我', s: f.s, fest: f.fest, tip: CAT_TIP[f.cat] || '',
+    no: camp ? `第 ${camp.no} 期` : '新一期', dl: camp ? md(camp.deadline) : '本期截止日', hl: camp && camp.highlight ? camp.highlight : '有不少好物',
+  };
+  let msg = set[f.idx % set.length].replace(/\{(\w+)\}/g, (m, k) => vars[k] ?? '');
+  if (f.tone !== 'short' && state.profile.me && !msg.includes(state.profile.me)) msg += `\n— ${state.profile.me}`;
+  return msg;
+}
+const variants = (reason, tone) => ((TEMPLATES[reason] || TEMPLATES.general)[tone] || []).length;
+
+/* ---------- 版面 ---------- */
+const COLORS = ['#a31d5a', '#0f8a80', '#6b4fd1', '#c27a00', '#4f6b8a', '#d2611f', '#2d7d46', '#8a5a6e'];
+const colorFor = s => { let h = 0; for (const ch of s) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return COLORS[h % COLORS.length]; };
+const avatar = c => `<span class="avatar" style="background:${colorFor(c.name)}" aria-hidden="true">${esc(c.name[0] || '?')}</span>`;
+const chip = r => `<span class="chip" style="background:var(--c-${r})">${REASONS[r].emoji} ${REASONS[r].label}</span>`;
+
+function toast(text, action, fn) {
+  const el = $('#toast');
+  el.innerHTML = `<span>${esc(text)}</span>${action ? `<button type="button">${esc(action)}</button>` : ''}`;
+  if (action) el.querySelector('button').onclick = () => { el.classList.remove('on'); fn(); };
+  el.classList.add('on');
+  clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('on'), action ? 7000 : 2600);
+}
+async function copy(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {
+    const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    let ok = false; try { ok = document.execCommand('copy'); } catch (e2) { /* 無法複製 */ }
+    ta.remove(); return ok;
+  }
+}
+function download(name, text, type) {
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  const a = Object.assign(document.createElement('a'), { href: url, download: name });
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+/* ---------- 分頁 ---------- */
+let tab = 'today';
+function go(name) {
+  tab = name;
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'v-' + name));
+  document.querySelectorAll('nav.tabs a').forEach(a => a.classList.toggle('on', a.dataset.tab === name));
+  render();
+  window.scrollTo(0, 0);
+}
+function route() {
+  if (!sheetLocked) closeSheet();
+  const h = location.hash.slice(1) || 'today';
+  if (h === 'add') { go('customers'); history.replaceState(null, '', '#customers'); openCustomerForm(); return; }
+  go(['today', 'customers', 'results', 'more'].includes(h) ? h : 'today');
+}
+function render() {
+  const t = new Date();
+  $('#todayLabel').textContent = `${t.getMonth() + 1} 月 ${t.getDate()} 日（${WEEK[t.getDay()]}）`;
+  document.documentElement.classList.toggle('big', !!state.profile.big);
+  if (state.profile.theme === 'auto') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.dataset.theme = state.profile.theme;
+  const { todo, done } = plan();
+  const n = Math.min(todo.length, Math.max(0, state.profile.daily - done.length));
+  const b = $('#badge'); b.hidden = !n; b.textContent = n;
+  ({ today: renderToday, customers: renderCustomers, results: renderResults, more: renderMore })[tab]();
+}
+
+/* ---------- 今天 ---------- */
+let showAll = false;
+function greeting() { const h = new Date().getHours(); return h < 11 ? '早安' : h < 18 ? '午安' : '晚安'; }
+function campaignBar() {
+  const k = campaign();
+  if (!k) return `<div class="camp"><span class="e">📖</span><span class="grow"><b>設定本期型錄與訂貨截止日</b><br><span class="small muted">小幫手就會提醒你推新型錄、截止前提醒熟客訂貨</span></span><button class="btn sm primary" data-act="campaign">設定</button></div>`;
+  if (k.expired) return `<div class="camp urgent"><span class="e">📖</span><span class="grow"><b>第 ${esc(k.no)} 期已經截止</b><br><span class="small muted">設定下一期，提醒才會繼續</span></span><button class="btn sm primary" data-act="campaign">設定</button></div>`;
+  return `<div class="camp ${k.daysLeft <= 1 ? 'urgent' : ''}"><span class="e">📖</span><span class="grow"><b>第 ${esc(k.no)} 期型錄</b><br>${k.daysLeft === 0 ? '<b>今天訂貨截止</b>' : `訂貨截止 ${md(k.deadline)}（${WEEK[parse(k.deadline).getDay()]}），還有 <b>${k.daysLeft}</b> 天`}
+    ${k.highlight ? `<br><span class="small muted">本期主打：${esc(k.highlight)}</span>` : ''}</span>
+    <span class="col"><button class="btn sm line" data-act="share-catalog">分享型錄</button><button class="btn sm ghost" data-act="campaign">修改</button></span></div>`;
+}
+function renderToday() {
+  const { done, todo } = plan();
+  const daily = state.profile.daily;
+  const shown = showAll ? todo : todo.slice(0, Math.max(0, daily - done.length));
+  const total = shown.length + done.length;
+  const pct = total ? done.length / total : 0;
+  const C = 2 * Math.PI * 32;
+  const me = state.profile.me ? `，${esc(state.profile.me)}` : '';
+  let html = `<div class="stack">`;
+  if (state.profile.practice && !demo) html += `<div class="banner"><span>🧪</span><span class="grow">目前是<b>練習資料</b>，可以放心按按看。</span><button class="btn sm" data-act="clear-practice">開始用真的</button></div>`;
+  html += installBanner();
+  html += `<div class="card hero">
+    <div class="ring" role="img" aria-label="今天完成 ${done.length} 位，共 ${total} 位">
+      <svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="32" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="8"/>
+      <circle cx="38" cy="38" r="32" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct)}"/></svg>
+      <b>${done.length}/${total}</b></div>
+    <div><h1>${greeting()}${me}！</h1>
+    <p>${!state.customers.length ? '先加入幾位顧客，我就能幫你安排每天要關心誰。' : shown.length ? `今天有 <b>${shown.length}</b> 位顧客等你關心，一位只要 1 分鐘。` : done.length ? '今天的關心都完成了，你真的很棒！' : '今天沒有需要特別關心的顧客，可以休息一下 ☕'}</p></div>
+  </div>`;
+  html += campaignBar();
+
+  if (!state.customers.length) {
+    html += `<div class="card empty"><div class="big">👥</div><p>還沒有顧客資料</p>
+      <div class="stack"><button class="btn primary block" data-act="add">＋ 新增第一位顧客</button>
+      <button class="btn block" data-act="practice">用練習資料試試看</button></div></div>`;
+  } else {
+    if (shown.length) {
+      html += `<h2>今天要關心</h2><div>`;
+      html += shown.map(x => `<button class="task" data-care="${x.c.id}">
+        ${avatar(x.c)}<span class="mid"><span class="name">${esc(x.c.name)} ${x.c.vip ? '<span class="vip" title="VIP">★</span>' : ''}</span>
+        <span class="why">${chip(x.r)} ${esc(x.why)}</span></span><span class="go">關心</span></button>`).join('');
+      html += `</div>`;
+    }
+    const rest = todo.length - shown.length;
+    if (rest > 0) html += `<button class="btn ghost more-toggle" data-act="show-all">還有 ${rest} 位可以關心，看全部</button>`;
+    else if (showAll && todo.length > daily) html += `<button class="btn ghost more-toggle" data-act="show-all">只看今天推薦的</button>`;
+    if (!shown.length && done.length) html += `<div class="card celebrate"><div class="big">🎉</div><b>今天的關心任務完成！</b><p class="muted small">每天一點點，顧客會記得你的用心。</p></div>`;
+    if (done.length) {
+      html += `<h2>今天已關心 ${done.length} 位</h2><div>`;
+      html += done.map(({ c, x }) => `<button class="task done" data-care="${c.id}" data-reason="${x.reason}">
+        ${avatar(c)}<span class="mid"><span class="name">${esc(c.name)}</span><span class="why">${RESULTS[x.result].emoji} ${RESULTS[x.result].label}${x.amount ? '・' + money(x.amount) : ''}</span></span>
+        <span class="go">${x.result === 'sent' ? '記結果' : '✓'}</span></button>`).join('');
+      html += `</div>`;
+    }
+    html += `<p class="muted small" style="margin-top:18px">💡 推薦順序：生日 → 約好再聯絡 → 該回購 → 訂貨截止 → 試用回訪 → 首購關心 → 新型錄 → 再問一次 → 久沒聯絡的老顧客。</p>`;
+  }
+  html += `</div>`;
+  $('#v-today').innerHTML = html;
+}
+
+/* ---------- 關心流程（三步驟） ---------- */
+let flow = null;
+const lastSample = c => { const s = sortDate(c.samples || []).pop(); return s ? s.item : ''; };
+function openCare(id, forceReason) {
+  const c = byId(id); if (!c) return;
+  const t = today();
+  const todayContact = sortDate(c.contacts).filter(x => x.date === t).pop();
+  const s = signal(c, t);
+  const reason = forceReason || (todayContact && todayContact.reason) || (s && s.r) || 'general';
+  flow = { id, reason, tone: state.profile.tone, idx: 0, contactId: todayContact ? todayContact.id : null, pick: todayContact ? todayContact.result : null };
+  applySignal(c, s);
+  renderCare();
+}
+// 依關心理由帶入產品、試用品、節日等話術變數
+function applySignal(c, s) {
+  const lastP = sortDate(c.purchases).pop();
+  const match = s && s.r === flow.reason;
+  flow.why = match ? s.why : flow.reason === 'general' ? '找個理由打聲招呼，維繫關係' : REASONS[flow.reason].label;
+  flow.p = match && s.p ? s.p : lastP ? pLabel(lastP) : '雅芳的產品';
+  flow.cat = match && s.cat ? s.cat : lastP ? lastP.cat : 'other';
+  flow.s = match && s.item ? s.item : lastSample(c) || '試用品';
+  flow.fest = match && s.fest ? s.fest : (upcomingFestival(today()) || {}).n || '節日';
+  flow.msg = buildMessage(c, flow);
+}
+function updateRisk() { const el = $('#risk'); if (el) el.innerHTML = riskHTML(riskCheck(flow.msg)); }
+function renderCare() {
+  const c = byId(flow.id);
+  const contact = flow.contactId && c.contacts.find(x => x.id === flow.contactId);
+  const n = variants(flow.reason, flow.tone);
+  openSheet(`
+    <div class="sheet-head">${avatar(c)}<h2 id="sheetTitle">關心 ${esc(c.name)} ${c.vip ? '<span class="vip">★</span>' : ''}</h2><button class="icon-btn" data-act="close" aria-label="關閉">✕</button></div>
+    <p style="margin:6px 0 0">${chip(flow.reason)} <span class="muted">${esc(flow.why)}</span></p>
+    ${c.note ? `<p class="small muted" style="margin:6px 0 0">📝 ${esc(c.note)}</p>` : ''}
+
+    <div class="step"><span class="n">1</span>選一句話（可以直接改）</div>
+    <div class="seg" role="group" aria-label="語氣">${Object.entries(TONES).map(([k, v]) => `<button data-tone="${k}" class="${flow.tone === k ? 'on' : ''}">${v}</button>`).join('')}</div>
+    <textarea class="msg" id="msg" aria-label="訊息內容" style="margin-top:10px">${esc(flow.msg)}</textarea>
+    <div id="risk"></div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn sm" data-act="next-variant" ${n < 2 ? 'disabled' : ''}>🔄 換一句</button>
+      <button class="btn sm" data-act="ai-help">✨ 請 AI 寫得更好</button>
+    </div>
+    <label class="field" style="margin-top:8px"><span class="muted">換個關心理由</span><select id="reasonSel">
+        ${Object.entries(REASONS).map(([k, v]) => `<option value="${k}" ${k === flow.reason ? 'selected' : ''}>${v.emoji} ${v.label}</option>`).join('')}
+      </select></label>
+
+    <div class="step"><span class="n">2</span>傳給顧客</div>
+    <button class="btn line block" data-send="line">💚 用 LINE 傳送</button>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" data-send="copy">📋 複製</button>
+      ${c.phone ? `<button class="btn" data-send="call">📞 打電話</button><button class="btn" data-send="sms">✉️ 簡訊</button>` : ''}
+    </div>
+    ${contact ? `<p class="small" style="color:var(--ok);margin:8px 0 0">✓ 今天已用${{ line: ' LINE ', copy: '複製', call: '電話', sms: '簡訊' }[contact.channel] || ''}聯絡</p>` : ''}
+
+    <div class="step"><span class="n">3</span>對方怎麼回應？</div>
+    <div class="result-grid">
+      ${['replied', 'ordered', 'noreply', 'later'].map(r => `<button data-result="${r}" class="${flow.pick === r ? 'on' : ''}"><span>${RESULTS[r].emoji}</span>${RESULTS[r].label}</button>`).join('')}
+    </div>
+    <div id="subForm"></div>
+    <p class="small muted" style="margin-top:14px">還沒有結果也沒關係，傳完就算完成；之後在「今天已關心」點「記結果」補上。</p>
+  `);
+  updateRisk();
+  $('#msg').addEventListener('input', e => { flow.msg = e.target.value; updateRisk(); });
+  $('#reasonSel').addEventListener('change', e => { flow.reason = e.target.value; flow.idx = 0; applySignal(c, signal(c)); renderCare(); });
+  if (flow.pick === 'ordered' || flow.pick === 'later') showSub(flow.pick);
+}
+function ensureContact(channel) {
+  const c = byId(flow.id);
+  let x = flow.contactId && c.contacts.find(k => k.id === flow.contactId);
+  if (!x) { x = { id: uid(), date: today(), reason: flow.reason, channel: channel || 'copy', result: 'sent', amount: 0 }; c.contacts.push(x); flow.contactId = x.id; }
+  else { if (channel) x.channel = channel; x.reason = flow.reason; }
+  return x;
+}
+async function send(channel) {
+  const f = flow, c = byId(f.id), msg = f.msg;
+  const hits = channel === 'call' ? [] : riskCheck(msg);
+  if (hits.length && !confirm(`訊息裡有「${hits.flatMap(h => h.words).join('、')}」，可能違反廣告或傳銷相關規範。\n\n建議先修改。確定還是要送出嗎？`)) return;
+  const tel = (c.phone || '').replace(/[^\d+]/g, '');
+  if (channel === 'line') { await copy(msg); window.open('https://line.me/R/share?text=' + encodeURIComponent(msg), '_blank'); }
+  else if (channel === 'copy') { toast((await copy(msg)) ? '已複製，貼到 LINE 或簡訊就可以了' : '無法自動複製，請長按訊息複製'); }
+  else if (channel === 'call') location.href = 'tel:' + tel;
+  else if (channel === 'sms') location.href = 'sms:' + tel + '?&body=' + encodeURIComponent(msg);
+  if (flow !== f) return;
+  ensureContact(channel); save(); render();
+  if ($('#sheet').classList.contains('on')) renderCare();
+  if (channel === 'line') toast('已開啟 LINE，選好對象就能送出（訊息也已複製）');
+}
+function pickResult(r) {
+  flow.pick = r;
+  document.querySelectorAll('[data-result]').forEach(b => b.classList.toggle('on', b.dataset.result === r));
+  if (r === 'ordered' || r === 'later') { showSub(r); return; }
+  finishResult(r);
+}
+function showSub(r) {
+  const c = byId(flow.id);
+  const lastP = sortDate(c.purchases).pop();
+  const box = $('#subForm');
+  if (r === 'later') {
+    box.innerHTML = `<div class="card" style="margin-top:12px"><b>什麼時候再聯絡？</b>
+      <div class="row" style="margin-top:10px">${[[1, '明天'], [3, '3 天後'], [7, '下週']].map(([n, l]) => `<button class="btn sm" data-later="${n}">${l}</button>`).join('')}</div>
+      <label class="field"><span>或選日期</span><input type="date" id="laterDate" min="${addDays(today(), 1)}"></label></div>`;
+    $('#laterDate').addEventListener('change', e => e.target.value && finishResult('later', { followUp: e.target.value }));
+  } else {
+    const cat = flow.cat || (lastP ? lastP.cat : 'skin');
+    box.innerHTML = `<div class="card" style="margin-top:12px"><b>太好了 🎉 記一下訂了什麼</b>
+      <label class="field"><span>品類</span>${catSelect('id="oCat"', cat)}</label>
+      <label class="field"><span>產品名稱（可不填）</span><input id="oProduct" list="productList" value="${esc(lastP && lastP.cat === cat ? lastP.product : '')}" placeholder="例如：保濕精華液"></label>
+      <div class="field-row"><label class="field"><span>金額</span><input id="oAmount" type="number" inputmode="numeric" min="0" placeholder="例如 1680" value="${lastP && lastP.cat === cat ? lastP.amount || '' : ''}"></label>
+      <label class="field"><span>大約多久用完</span><select id="oCycle">${CYCLES.map(([v, l]) => `<option value="${v}" ${catOf(cat).cycle === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label></div>
+      ${productDatalist()}
+      <button class="btn primary block" style="margin-top:14px" data-act="save-order">記下這筆訂貨</button></div>`;
+    $('#oCat').addEventListener('change', e => { $('#oCycle').value = catOf(e.target.value).cycle; $('#oProduct').value = ''; $('#oAmount').value = ''; });
+    $('#oAmount').focus();
+  }
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function finishResult(r, extra = {}) {
+  if (!flow) return;
+  const c = byId(flow.id);
+  const x = ensureContact();
+  x.result = r;
+  c.followUp = r === 'later' ? extra.followUp : '';
+  if (r === 'ordered') {
+    x.amount = extra.amount || 0;
+    c.purchases.push({ id: uid(), date: today(), cat: extra.cat || 'other', product: extra.product || '', amount: extra.amount || 0, cycle: extra.cycle || 0 });
+  }
+  flow = null; save(); closeSheet(); render();
+  const p = plan();
+  const left = p.todo.slice(0, Math.max(0, state.profile.daily - p.done.length)).length;
+  const msg = r === 'replied' ? '記下了！有回覆就是好的開始 💬' : r === 'ordered' ? `太棒了，訂貨 ${money(extra.amount)} 🎉`
+    : r === 'noreply' ? '沒關係，過幾天我會提醒你再問一次' : `好的，${md(extra.followUp)} 會提醒你`;
+  toast(left ? `${msg}　還有 ${left} 位` : `${msg}　今天的關心完成了！`);
+}
+
+/* AI 協助：產生去識別的提示詞，複製後打開常用 AI 工具 */
+function openAIHelp() {
+  const c = byId(flow.id);
+  const lastP = sortDate(c.purchases).pop();
+  const camp = campaign();
+  const prompt = `你是一位熟悉台灣雅芳產品、說話親切的美容顧問助理。請幫我寫一則要用 LINE 傳給顧客的訊息。
+・顧客稱呼：${callName(c).slice(0, 1)}〇〇（送出前我會自己換成本名）
+・關心原因：${REASONS[flow.reason].label}——${flow.why}
+・上次購買：${lastP ? `${pLabel(lastP)}（${catOf(lastP.cat).label}，${diff(lastP.date, today())} 天前）` : '尚未購買'}
+${camp && !camp.expired ? `・本期型錄：第 ${camp.no} 期，${md(camp.deadline)} 截止${camp.highlight ? `，主打「${camp.highlight}」` : ''}\n` : ''}・顧客特性：${c.vip ? '長期支持的 VIP，' : ''}${c.note ? c.note.replace(/\d{6,}/g, '***') : '無特別備註'}
+・語氣：${TONES[flow.tone]}，像姐妹聊天，不要硬推銷
+・長度：60 字以內，可以用 1～2 個表情符號
+・結尾：用一個容易回答的問題收尾
+・規範：遵守台灣化粧品與食品廣告規定，不提療效、不寫「保證、最有效、100%」等絕對用語
+請給我 3 個不同版本，並各用一句話說明適合什麼情況。`;
+  openSheet(`
+    <div class="sheet-head"><h2 id="sheetTitle">✨ 請 AI 幫忙寫</h2><button class="icon-btn" data-act="back-care" aria-label="返回">←</button></div>
+    <ol class="steps-guide">
+      <li><div>按「複製指令」，我已經把情境整理好，<b>不含電話與全名</b>。</div></li>
+      <li><div>打開你常用的 AI，貼上指令送出。</div></li>
+      <li><div>挑一個喜歡的版本，複製回來貼到下面。</div></li>
+    </ol>
+    <textarea class="msg" id="aiPrompt" aria-label="給 AI 的指令" style="min-height:220px">${esc(prompt)}</textarea>
+    <button class="btn primary block" style="margin-top:10px" data-act="copy-prompt">📋 複製指令</button>
+    <div class="row" style="margin-top:10px">
+      <a class="btn sm" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a>
+      <a class="btn sm" href="https://gemini.google.com/app" target="_blank" rel="noopener">Gemini</a>
+      <a class="btn sm" href="https://claude.ai/new" target="_blank" rel="noopener">Claude</a>
+    </div>
+    <label class="field"><span>把 AI 寫好的訊息貼在這裡</span><textarea id="aiBack" placeholder="貼上後按「用這句」"></textarea></label>
+    <button class="btn block" style="margin-top:10px" data-act="use-ai">用這句</button>
+  `);
+}
+
+/* ---------- 顧客 ---------- */
+let custFilter = 'all', custQuery = '';
+function lastInfo(c) {
+  const lp = sortDate(c.purchases).pop();
+  if (!lp) return '還沒有訂貨紀錄';
+  const k = diff(lp.date, today());
+  return `${catOf(lp.cat).emoji} 上次買${pLabel(lp)}・${k === 0 ? '今天' : k + ' 天前'}`;
+}
+function renderCustomers() {
+  const t = today();
+  const q = custQuery.trim();
+  let list = state.customers.map(c => ({ c, s: signal(c, t) }));
+  if (q) list = list.filter(({ c }) => (c.name + c.nick + c.phone + c.note + c.purchases.map(pLabel).join('')).includes(q));
+  if (custFilter === 'vip') list = list.filter(({ c }) => c.vip);
+  if (custFilter === 'care') list = list.filter(({ s }) => s);
+  if (custFilter === 'new') list = list.filter(({ c }) => c.purchases.length <= 1);
+  if (CATS.some(k => k.k === custFilter)) list = list.filter(({ c }) => c.purchases.some(p => p.cat === custFilter));
+  list.sort((a, b) => (b.s ? b.s.s : 0) - (a.s ? a.s.s : 0) || a.c.name.localeCompare(b.c.name, 'zh-Hant'));
+  const prev = document.activeElement && document.activeElement.id === 'q';
+  const filters = [['all', `全部 ${state.customers.length}`], ['care', '需要關心'], ['vip', '★ VIP'], ['new', '新客'], ...CATS.slice(0, 7).map(k => [k.k, `${k.emoji} ${k.label}`])];
+  $('#v-customers').innerHTML = `
+    <div class="row" style="margin-top:8px"><button class="btn primary" data-act="add">＋ 新增顧客</button><button class="btn" data-act="import" style="flex:0 0 auto">📥 匯入名單</button></div>
+    <input class="search" id="q" type="search" placeholder="🔍 搜尋姓名、電話、產品" value="${esc(custQuery)}" style="margin-top:12px" aria-label="搜尋顧客">
+    <div class="chips" role="group" aria-label="篩選">${filters.map(([k, l]) => `<button data-filter="${k}" class="${custFilter === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+    <div class="card" style="padding:4px 14px;margin-top:8px">
+      ${list.length ? list.map(({ c, s }) => `<button class="list-item" data-cust="${c.id}">${avatar(c)}
+        <span class="mid"><b>${esc(c.name)}</b> ${c.vip ? '<span class="vip">★</span>' : ''}<br><span class="small muted">${esc(lastInfo(c))}</span></span>
+        ${s ? chip(s.r) : ''}</button>`).join('') : `<div class="empty"><div class="big">🔍</div><p class="muted">${state.customers.length ? '找不到符合的顧客' : '還沒有顧客，按上面的「新增顧客」開始'}</p></div>`}
+    </div>`;
+  const qi = $('#q');
+  qi.addEventListener('input', e => { custQuery = e.target.value; renderCustomers(); });
+  if (prev) { qi.focus(); qi.setSelectionRange(qi.value.length, qi.value.length); }
+}
+
+function productDatalist() {
+  const set = new Set(); state.customers.forEach(c => c.purchases.forEach(p => p.product && set.add(p.product)));
+  return `<datalist id="productList">${[...set].map(p => `<option value="${esc(p)}">`).join('')}</datalist>`;
+}
+function openCustomer(id) {
+  const c = byId(id); if (!c) return;
+  const s = signal(c);
+  const events = [
+    ...c.purchases.map(p => ({ date: p.date, html: `🛍️ 訂了 <b>${esc(pLabel(p))}</b>${p.product ? ` <span class="muted small">${catOf(p.cat).label}</span>` : ''}${p.amount ? ' ' + money(p.amount) : ''}`, cls: 'buy' })),
+    ...(c.samples || []).map(x => ({ date: x.date, html: `🎁 送試用：${esc(x.item)}`, cls: '' })),
+    ...c.contacts.map(x => ({ date: x.date, html: `${REASONS[x.reason] ? REASONS[x.reason].emoji + ' ' + REASONS[x.reason].label : '聯絡'} → ${RESULTS[x.result] ? RESULTS[x.result].label : ''}`, cls: '' })),
+  ].sort((a, b) => (a.date < b.date ? 1 : -1));
+  const total = c.purchases.reduce((a, p) => a + (+p.amount || 0), 0);
+  const cats = [...new Set(c.purchases.map(p => p.cat))].map(k => `${catOf(k).emoji} ${catOf(k).label}`).join('、');
+  openSheet(`
+    <div class="sheet-head">${avatar(c)}<h2 id="sheetTitle">${esc(c.name)} ${c.vip ? '<span class="vip">★</span>' : ''}</h2><button class="icon-btn" data-act="close" aria-label="關閉">✕</button></div>
+    ${s ? `<div class="tip" style="margin-top:8px">${chip(s.r)} ${esc(s.why)}</div>` : ''}
+    <button class="btn primary block" style="margin-top:12px" data-care="${c.id}">💗 立即關心</button>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" data-act="add-purchase" data-id="${c.id}">＋ 訂貨紀錄</button>
+      <button class="btn" data-act="add-sample" data-id="${c.id}">🎁 送試用</button>
+    </div>
+    <div class="card" style="margin-top:14px"><dl class="kv">
+      ${c.nick ? `<dt>稱呼</dt><dd>${esc(c.nick)}</dd>` : ''}
+      <dt>電話</dt><dd>${c.phone ? `<a href="tel:${esc(c.phone.replace(/[^\d+]/g, ''))}">${esc(c.phone)}</a>` : '<span class="muted">未填</span>'}</dd>
+      <dt>生日</dt><dd>${c.birthday ? c.birthday.replace('-', ' 月 ') + ' 日' : '<span class="muted">未填</span>'}</dd>
+      <dt>累計訂貨</dt><dd>${c.purchases.length} 筆・${money(total)}</dd>
+      ${cats ? `<dt>常買品類</dt><dd>${cats}</dd>` : ''}
+      ${c.followUp ? `<dt>約好聯絡</dt><dd>${md(c.followUp)}</dd>` : ''}
+      ${c.note ? `<dt>備註</dt><dd>${esc(c.note)}</dd>` : ''}
+    </dl></div>
+    <h3>往來紀錄</h3>
+    ${events.length ? `<div class="timeline">${events.map(e => `<div class="ev ${e.cls}"><span class="muted small">${md(e.date)}</span>　${e.html}</div>`).join('')}</div>` : '<p class="muted">還沒有紀錄</p>'}
+    <div class="row" style="margin-top:18px"><button class="btn" data-act="edit" data-id="${c.id}">✏️ 編輯資料</button><button class="btn ghost" data-act="delete" data-id="${c.id}" style="color:var(--brand)">🗑️ 刪除</button></div>
+  `);
+}
+function bindCatCycle(form) {
+  form.querySelector('[name=cat]').addEventListener('change', e => { form.querySelector('[name=cycle]').value = catOf(e.target.value).cycle; });
+}
+function purchaseFields(lp) {
+  const cat = lp ? lp.cat : 'skin';
+  return `<label class="field"><span>品類</span>${catSelect('name="cat"', cat)}</label>
+      <label class="field"><span>產品名稱（可不填）</span><input name="product" list="productList" value="${esc(lp ? lp.product : '')}" placeholder="例如：保濕精華液"></label>
+      <div class="field-row">
+        <label class="field"><span>日期</span><input name="date" type="date" value="${today()}" max="${today()}"></label>
+        <label class="field"><span>金額</span><input name="amount" type="number" inputmode="numeric" min="0" placeholder="1680"></label>
+      </div>
+      <label class="field"><span>大約多久用完</span><select name="cycle">${CYCLES.map(([v, l]) => `<option value="${v}" ${v === (lp ? lp.cycle : catOf(cat).cycle) ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+      ${productDatalist()}`;
+}
+const purchaseFrom = f => ({ id: uid(), date: f.date || today(), cat: f.cat || guessCat(f.product), product: (f.product || '').trim(), amount: +f.amount || 0, cycle: +f.cycle || 0 });
+function openCustomerForm(id) {
+  const c = id ? byId(id) : null;
+  const [bm, bd] = c && c.birthday ? c.birthday.split('-') : ['', ''];
+  openSheet(`
+    <div class="sheet-head"><h2 id="sheetTitle">${c ? '編輯顧客' : '新增顧客'}</h2><button class="icon-btn" data-act="close" aria-label="關閉">✕</button></div>
+    <form id="custForm" autocomplete="off">
+      <label class="field"><span>姓名 *</span><input name="name" required value="${esc(c ? c.name : '')}" placeholder="例如：林美惠"></label>
+      <div class="field-row">
+        <label class="field"><span>平常怎麼稱呼</span><input name="nick" value="${esc(c ? c.nick : '')}" placeholder="例如：美惠姐"></label>
+        <label class="field"><span>手機</span><input name="phone" type="tel" inputmode="tel" value="${esc(c ? c.phone : '')}" placeholder="0912-345-678"></label>
+      </div>
+      <div class="field-row">
+        <label class="field"><span>生日（月）</span><select name="bm"><option value="">—</option>${Array.from({ length: 12 }, (_, i) => `<option ${+bm === i + 1 ? 'selected' : ''}>${i + 1}</option>`).join('')}</select></label>
+        <label class="field"><span>生日（日）</span><select name="bd"><option value="">—</option>${Array.from({ length: 31 }, (_, i) => `<option ${+bd === i + 1 ? 'selected' : ''}>${i + 1}</option>`).join('')}</select></label>
+      </div>
+      ${c ? '' : `<h3>最近一次訂貨（可以先不填）</h3><label class="check" style="margin-top:0"><input type="checkbox" name="hasP" checked> 有訂過貨</label>${purchaseFields(null)}`}
+      <label class="field"><span>備註（膚質、喜好、家人）</span><textarea name="note" placeholder="例如：敏感肌、喜歡玫瑰香">${esc(c ? c.note : '')}</textarea></label>
+      <label class="check"><input type="checkbox" name="vip" ${c && c.vip ? 'checked' : ''}> ★ 重要顧客（VIP）</label>
+      <button class="btn primary block" style="margin-top:18px" type="submit">${c ? '儲存' : '加入顧客'}</button>
+    </form>
+  `);
+  const form = $('#custForm');
+  if (!c) bindCatCycle(form);
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const f = Object.fromEntries(new FormData(e.target));
+    const name = f.name.trim(); if (!name) return;
+    const birthday = f.bm && f.bd ? `${pad(f.bm)}-${pad(f.bd)}` : '';
+    if (c) {
+      Object.assign(c, { name, nick: f.nick.trim(), phone: f.phone.trim(), birthday, note: f.note.trim(), vip: !!f.vip });
+      save(); render(); openCustomer(c.id); toast('已儲存');
+    } else {
+      const nc = { id: uid(), name, nick: f.nick.trim(), phone: f.phone.trim(), birthday, note: f.note.trim(), vip: !!f.vip, followUp: '', purchases: [], contacts: [], samples: [] };
+      if (f.hasP) nc.purchases.push(purchaseFrom(f));
+      state.customers.push(nc); save(); closeSheet(); render();
+      toast(`已加入 ${name}`, '再新增一位', () => openCustomerForm());
+    }
+  });
+  if (!c) setTimeout(() => $('#custForm [name=name]').focus(), 250);
+}
+function openPurchaseForm(id) {
+  const c = byId(id);
+  openSheet(`
+    <div class="sheet-head"><h2 id="sheetTitle">${esc(c.name)} 的訂貨紀錄</h2><button class="icon-btn" data-act="back-cust" data-id="${c.id}" aria-label="返回">←</button></div>
+    <form id="pForm">${purchaseFields(sortDate(c.purchases).pop())}
+      <button class="btn primary block" style="margin-top:18px" type="submit">儲存</button>
+    </form>`);
+  const form = $('#pForm');
+  bindCatCycle(form);
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    c.purchases.push(purchaseFrom(Object.fromEntries(new FormData(e.target))));
+    save(); render(); openCustomer(c.id); toast('已記下訂貨紀錄');
+  });
+}
+function openSampleForm(id) {
+  const c = byId(id);
+  openSheet(`
+    <div class="sheet-head"><h2 id="sheetTitle">🎁 送 ${esc(c.name)} 試用品</h2><button class="icon-btn" data-act="back-cust" data-id="${c.id}" aria-label="返回">←</button></div>
+    <form id="sForm">
+      <label class="field"><span>試用品 *</span><input name="item" required list="sampleList" placeholder="例如：保濕精華試用包"></label>
+      <datalist id="sampleList">${CATS.slice(0, 7).map(k => `<option value="${k.label.split('／')[0]}試用包">`).join('')}</datalist>
+      <label class="field"><span>哪一天送的</span><input name="date" type="date" value="${today()}" max="${today()}"></label>
+      <p class="small muted">送出後第 2～7 天，小幫手會提醒你問問試用感受。</p>
+      <button class="btn primary block" style="margin-top:12px" type="submit">記下來</button>
+    </form>`);
+  $('#sForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const f = Object.fromEntries(new FormData(e.target));
+    (c.samples = c.samples || []).push({ id: uid(), date: f.date || today(), item: f.item.trim() });
+    save(); render(); openCustomer(c.id); toast('記下了，過兩天會提醒你回訪');
+  });
+}
+
+/* CSV 匯入 */
+const CSV_HEAD = '姓名,稱呼,手機,生日(月/日),品類,產品,購買日期,金額,幾天用完,備註,VIP';
+function openImport() {
+  openSheet(`
+    <div class="sheet-head"><h2 id="sheetTitle">📥 匯入顧客名單</h2><button class="icon-btn" data-act="close" aria-label="關閉">✕</button></div>
+    <ol class="steps-guide">
+      <li><div>下載範本，用 Excel 或 Google 試算表打開。</div></li>
+      <li><div>一列一筆購買，同一位顧客買多次就寫多列。只有「姓名」一定要填。</div></li>
+      <li><div>另存成 CSV，再按下面的「選擇檔案」。</div></li>
+    </ol>
+    <button class="btn block" data-act="csv-template">⬇️ 下載範本</button>
+    <label class="btn primary block" style="margin-top:10px">📂 選擇 CSV 檔案<input type="file" id="csvFile" accept=".csv,text/csv" class="sr"></label>
+    <p class="small muted">檔案只在你的手機裡讀取，不會上傳。</p>
+    <div id="importResult"></div>`);
+  $('#csvFile').addEventListener('change', async e => {
+    const file = e.target.files[0]; if (!file) return;
+    const buf = await file.arrayBuffer();
+    let text = new TextDecoder('utf-8').decode(buf);
+    if (text.includes('�')) { try { text = new TextDecoder('big5').decode(buf); } catch (err) { /* 不支援 big5 */ } }
+    const r = importCSV(text);
+    $('#importResult').innerHTML = `<div class="tip" style="margin-top:12px">✅ 新增 ${r.added} 位、更新 ${r.updated} 位顧客，共 ${r.rows} 筆資料${r.skipped ? `；${r.skipped} 列沒有姓名已略過` : ''}。</div>`;
+    render();
+  });
+}
+function parseCSV(text) {
+  const rows = []; let row = [], cell = '', q = false;
+  text = text.replace(/^﻿/, '');
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) { if (ch === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === ',') { row.push(cell); cell = ''; }
+    else if (ch === '\n' || ch === '\r') { if (ch === '\r' && text[i + 1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = ''; }
+    else cell += ch;
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  return rows.filter(r => r.some(x => x.trim()));
+}
+function normDate(s) {
+  s = (s || '').trim(); if (!s) return '';
+  const m = s.match(/^(\d{2,4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})$/);
+  if (!m) return '';
+  let y = +m[1]; if (y < 1000) y += 1911; // 民國年
+  return `${y}-${pad(m[2])}-${pad(m[3])}`;
+}
+function normBirthday(s) {
+  s = (s || '').trim(); if (!s) return '';
+  const parts = s.split(/[\/\-.月日]/).filter(Boolean).map(Number);
+  if (parts.length < 2) return '';
+  const [m, d] = parts.slice(-2);
+  return m >= 1 && m <= 12 && d >= 1 && d <= 31 ? `${pad(m)}-${pad(d)}` : '';
+}
+function importCSV(text) {
+  const rows = parseCSV(text);
+  if (!rows.length) return { added: 0, updated: 0, rows: 0, skipped: 0 };
+  const head = rows[0].map(h => h.trim());
+  const find = (...keys) => head.findIndex(h => keys.some(k => h.includes(k)));
+  const ix = { name: find('姓名', '名字', 'name'), nick: find('稱呼'), phone: find('手機', '電話', 'phone'), bd: find('生日'), cat: find('品類', '類別'), product: find('產品', '商品'), date: find('日期'), amount: find('金額'), cycle: find('天', '週期'), note: find('備註'), vip: find('VIP', 'vip') };
+  const get = (r, k) => (ix[k] >= 0 ? (r[ix[k]] || '').trim() : '');
+  let added = 0, updated = 0, skipped = 0;
+  const touched = new Set();
+  for (const r of rows.slice(1)) {
+    const name = get(r, 'name'); if (!name) { skipped++; continue; }
+    const phone = get(r, 'phone');
+    let c = state.customers.find(x => x.name === name && (!phone || !x.phone || x.phone.replace(/\D/g, '') === phone.replace(/\D/g, '')));
+    if (!c) { c = { id: uid(), name, nick: '', phone: '', birthday: '', note: '', vip: false, followUp: '', purchases: [], contacts: [], samples: [] }; state.customers.push(c); added++; touched.add(c.id); }
+    else if (!touched.has(c.id)) { updated++; touched.add(c.id); }
+    if (get(r, 'nick')) c.nick = get(r, 'nick');
+    if (phone) c.phone = phone;
+    if (normBirthday(get(r, 'bd'))) c.birthday = normBirthday(get(r, 'bd'));
+    if (get(r, 'note')) c.note = get(r, 'note');
+    if (/^(v|y|是|1|vip|★)/i.test(get(r, 'vip'))) c.vip = true;
+    const product = get(r, 'product'), catText = get(r, 'cat');
+    if (product || catText) {
+      const date = normDate(get(r, 'date')) || today();
+      if (!c.purchases.some(p => p.date === date && p.product === product))
+        { const cat = matchCat(catText) || guessCat(product); c.purchases.push({ id: uid(), date, cat, product, amount: +get(r, 'amount').replace(/[^\d.]/g, '') || 0, cycle: get(r, 'cycle') ? +get(r, 'cycle').replace(/\D/g, '') || 0 : catOf(cat).cycle }); }
+    }
+  }
+  if (state.profile.practice && added) { /* 匯入真實名單時保留練習資料，讓使用者自己決定是否清除 */ }
+  save();
+  return { added, updated, rows: rows.length - 1, skipped };
+}
+
+/* ---------- 成果 ---------- */
+let period = 7;
+function streak() {
+  const days = new Set(); state.customers.forEach(c => c.contacts.forEach(x => days.add(x.date)));
+  let d = today(), n = 0;
+  if (!days.has(d)) d = addDays(d, -1);
+  while (days.has(d)) { n++; d = addDays(d, -1); }
+  return n;
+}
+function stats(days) {
+  const t = today(), start = addDays(t, -(days - 1));
+  const xs = []; state.customers.forEach(c => c.contacts.forEach(x => { if (x.date >= start && x.date <= t) xs.push({ ...x, cid: c.id }); }));
+  const people = new Set(xs.map(x => x.cid)).size;
+  const answered = xs.filter(x => x.result === 'replied' || x.result === 'ordered').length;
+  const ordered = xs.filter(x => x.result === 'ordered');
+  const amount = ordered.reduce((a, x) => a + (+x.amount || 0), 0);
+  const byReason = {};
+  xs.forEach(x => { const r = byReason[x.reason] || (byReason[x.reason] = { n: 0, ok: 0, buy: 0 }); r.n++; if (x.result === 'replied' || x.result === 'ordered') r.ok++; if (x.result === 'ordered') r.buy++; });
+  return { xs, people, answered, rate: xs.length ? Math.round(answered / xs.length * 100) : 0, orders: ordered.length, amount, byReason, start };
+}
+function reportText() {
+  const s = stats(period);
+  const best = Object.entries(s.byReason).filter(([, v]) => v.buy).sort((a, b) => b[1].buy - a[1].buy)[0];
+  return `【${period === 7 ? '本週' : '近 30 天'}關心與業績】${state.profile.me || ''}
+💗 關心 ${s.people} 位顧客（共 ${s.xs.length} 次）
+💬 有回應 ${s.answered} 次，回應率 ${s.rate}%
+🛍️ 訂貨 ${s.orders} 筆，金額 ${money(s.amount)}
+${best ? `⭐ 最有效：${REASONS[best[0]].label}（訂貨 ${best[1].buy} 筆）\n` : ''}🔥 連續行動 ${streak()} 天
+— 由「雅芳銷售小幫手」整理`;
+}
+function renderResults() {
+  const s = stats(period);
+  const t = today();
+  const days = Array.from({ length: 7 }, (_, i) => addDays(t, i - 6));
+  const perDay = days.map(d => { let n = 0, b = 0; state.customers.forEach(c => c.contacts.forEach(x => { if (x.date === d) { n++; if (x.result === 'ordered') b++; } })); return { d, n, b }; });
+  const max = Math.max(1, ...perDay.map(x => x.n));
+  const reasons = Object.entries(s.byReason).sort((a, b) => b[1].n - a[1].n);
+  const rmax = Math.max(1, ...reasons.map(([, v]) => v.n));
+  const st = streak();
+  $('#v-results').innerHTML = `
+    <div class="seg" role="group" aria-label="期間" style="margin-top:8px"><button data-period="7" class="${period === 7 ? 'on' : ''}">最近 7 天</button><button data-period="30" class="${period === 30 ? 'on' : ''}">最近 30 天</button></div>
+    <div class="desk"><div>
+    <div class="stats" style="margin-top:12px">
+      <div class="stat"><b>${s.people}</b><span>關心顧客（位）</span></div>
+      <div class="stat"><b>${s.rate}%</b><span>回應率</span></div>
+      <div class="stat"><b>${s.orders}</b><span>訂貨（筆）</span></div>
+      <div class="stat"><b>${money(s.amount)}</b><span>訂貨金額</span></div>
+    </div>
+    <div class="card" style="margin-top:12px;display:flex;gap:14px;align-items:center"><span style="font-size:2rem">${st ? '🔥' : '🌱'}</span>
+      <div><b>${st ? `連續行動 ${st} 天` : '今天開始第 1 天'}</b><div class="small muted">${st >= 5 ? '好習慣已經養成，顧客感受得到！' : '每天關心 3～5 位，一個月就能把顧客全部照顧一輪。'}</div></div></div>
+    <h3>每天關心人數</h3>
+    <div class="card">
+      <div class="bars" role="img" aria-label="最近 7 天每天關心人數">${perDay.map(x => `<div class="bar"><em>${x.n || ''}</em><div class="col" style="height:${x.n / max * 100}%"><i style="height:${x.n ? x.b / x.n * 100 : 0}%"></i></div><small>${x.d === t ? '今天' : WEEK[parse(x.d).getDay()]}</small></div>`).join('')}</div>
+      <div class="legend"><span><i style="background:var(--bar-soft)"></i>關心</span><span><i style="background:var(--brand-fill)"></i>其中訂貨</span></div>
+    </div>
+    </div><div>
+    <h3>哪種關心最有效</h3>
+    <div class="card">${reasons.length ? reasons.map(([k, v]) => `<div class="hbar"><span>${REASONS[k] ? REASONS[k].emoji + ' ' + REASONS[k].label : k}</span><span class="track"><i style="width:${v.n / rmax * 100}%;background:var(--c-${k})"></i></span><span class="small" style="text-align:right">${v.n} 次${v.buy ? `<br><b style="color:var(--brand)">訂貨 ${v.buy}</b>` : ''}</span></div>`).join('') : '<p class="muted">還沒有關心紀錄，到「今天」開始第一位吧！</p>'}</div>
+    <h3>回報給領導人</h3>
+    <div class="card"><pre style="white-space:pre-wrap;margin:0;font:inherit;font-size:.92rem">${esc(reportText())}</pre>
+      <div class="row" style="margin-top:12px"><button class="btn line" data-act="report-line">💚 LINE 傳送</button><button class="btn" data-act="report-copy">📋 複製</button></div></div>
+    </div></div>`;
+}
+
+/* ---------- 更多 ---------- */
+let deferredPrompt = null;
+const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+function installBanner() {
+  if (standalone() || demo) return '';
+  let hide = false; try { hide = localStorage.getItem('spca-hide-install') === today(); } catch (e) { /* 無法讀取 */ }
+  if (hide || !(deferredPrompt || isIOS)) return '';
+  return `<div class="banner" style="background:var(--brand-soft)"><span style="font-size:1.5rem">📲</span><span class="grow"><b>把小幫手放到手機桌面</b><br><span class="small muted">像 APP 一樣一按就開，沒網路也能用</span></span>
+    <button class="btn sm primary" data-act="install">安裝</button><button class="icon-btn" data-act="hide-install" aria-label="今天不再提示" style="width:36px;height:36px">✕</button></div>`;
+}
+async function install() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null; render();
+    if (outcome === 'accepted') toast('安裝好了！之後從桌面圖示打開就可以');
+    return;
+  }
+  openSheet(`
+    <div class="sheet-head"><h2 id="sheetTitle">📲 安裝到手機桌面</h2><button class="icon-btn" data-act="close" aria-label="關閉">✕</button></div>
+    ${isIOS ? `<h3>iPhone / iPad（請用 Safari 打開）</h3>
+    <ol class="steps-guide"><li><div>點畫面下方的 <b>分享</b> 按鈕（方框加向上箭頭 ⬆️）。</div></li><li><div>往下滑，點 <b>加入主畫面</b>。</div></li><li><div>右上角點 <b>新增</b>，桌面就會出現「雅芳小幫手」。</div></li></ol>` : ''}
+    <h3>Android（Chrome）</h3>
+    <ol class="steps-guide"><li><div>點右上角 <b>⋮</b> 選單。</div></li><li><div>點 <b>安裝應用程式</b> 或 <b>加到主畫面</b>。</div></li><li><div>按 <b>安裝</b>，完成。</div></li></ol>
+    <h3>電腦（Chrome / Edge）</h3>
+    <p>網址列右邊會出現 <b>安裝</b> 圖示（螢幕加箭頭），點一下即可。</p>
+    <p class="tip">💡 用 LINE 打開連結時，請先點右上角選單，選「用預設瀏覽器開啟」，再照上面步驟安裝。</p>`);
+}
+function renderMore() {
+  const p = state.profile;
+  const k = campaign();
+  $('#v-more').innerHTML = `
+    <h2>本期型錄</h2>
+    <div class="card menu">
+      <button data-act="campaign"><span class="ic">📖</span><span class="grow">${k && !k.expired ? `第 ${esc(k.no)} 期・${md(k.deadline)} 截止` : '設定本期型錄與訂貨截止日'}<br><span class="small muted">${k && k.cycle ? `每 ${k.cycle} 天自動換下一期` : '設定一次，之後自動換期'}</span></span>›</button>
+    </div>
+
+    <h2>我的設定</h2>
+    <div class="card menu">
+      <label style="display:block;padding:8px 4px 14px;border-bottom:1px solid var(--line)"><span class="small" style="font-weight:700">訊息署名（我的名字）</span>
+        <input class="search" id="meInput" value="${esc(p.me)}" placeholder="例如：小芳" style="margin-top:6px"></label>
+      <div style="padding:14px 4px;border-bottom:1px solid var(--line)"><div class="small" style="font-weight:700;margin-bottom:6px">預設語氣</div>
+        <div class="seg" role="group" aria-label="預設語氣">${Object.entries(TONES).map(([t, v]) => `<button data-deftone="${t}" class="${p.tone === t ? 'on' : ''}">${v}</button>`).join('')}</div></div>
+      <div style="padding:14px 4px;border-bottom:1px solid var(--line)"><div class="small" style="font-weight:700;margin-bottom:6px">每天推薦關心幾位</div>
+        <div class="seg" role="group" aria-label="每天推薦人數">${[3, 5, 8, 12].map(n => `<button data-daily="${n}" class="${p.daily === n ? 'on' : ''}">${n} 位</button>`).join('')}</div></div>
+      <label style="display:flex;align-items:center;gap:12px;padding:14px 4px;border-bottom:1px solid var(--line)"><span class="ic">🔠</span><span class="grow">大字模式</span><span class="switch"><input type="checkbox" id="bigSw" ${p.big ? 'checked' : ''}><span></span></span></label>
+      <div style="padding:14px 4px"><div class="small" style="font-weight:700;margin-bottom:6px">外觀</div>
+        <div class="seg" role="group" aria-label="外觀">${[['auto', '跟著手機'], ['light', '淺色'], ['dark', '深色']].map(([t, v]) => `<button data-theme-set="${t}" class="${p.theme === t ? 'on' : ''}">${v}</button>`).join('')}</div></div>
+    </div>
+
+    <h2>APP 與提醒</h2>
+    <div class="card menu">
+      ${standalone() ? `<div style="display:flex;gap:12px;align-items:center;padding:14px 4px;border-bottom:1px solid var(--line)"><span class="ic">✅</span><span class="grow">已安裝成 APP</span></div>` : `<button data-act="install"><span class="ic">📲</span><span class="grow">安裝到手機桌面</span>›</button>`}
+      <button data-act="reminder"><span class="ic">⏰</span><span class="grow">加入每天提醒（行事曆）<br><span class="small muted">每天早上 9 點提醒你打開小幫手</span></span>›</button>
+      <button data-act="share-app"><span class="ic">🔗</span><span class="grow">分享給夥伴</span>›</button>
+    </div>
+
+    <h2>教學與帶領</h2>
+    <div class="card menu">
+      <button data-act="guide"><span class="ic">📖</span><span class="grow">3 分鐘學會怎麼用</span>›</button>
+      <button data-act="words"><span class="ic">⚖️</span><span class="grow">話術用詞小提醒<br><span class="small muted">哪些話不能說、可以怎麼說</span></span>›</button>
+      <button data-act="practice"><span class="ic">🧪</span><span class="grow">載入練習資料<br><span class="small muted">教育訓練、第一次使用時練習</span></span>›</button>
+      <button data-act="leader"><span class="ic">🧭</span><span class="grow">給領導人：如何帶夥伴用起來</span>›</button>
+    </div>
+
+    <h2>資料</h2>
+    <div class="card menu">
+      <button data-act="import"><span class="ic">📥</span><span class="grow">匯入顧客名單（CSV）</span>›</button>
+      <button data-act="backup"><span class="ic">💾</span><span class="grow">備份資料<br><span class="small muted">換手機前先備份</span></span>›</button>
+      <label style="display:flex;gap:12px;align-items:center;padding:14px 4px;border-bottom:1px solid var(--line);cursor:pointer"><span class="ic">♻️</span><span class="grow">從備份還原</span>›<input type="file" id="restoreFile" accept=".json,application/json" class="sr"></label>
+      <button data-act="wipe" style="color:var(--brand)"><span class="ic">🗑️</span><span class="grow">清除所有資料</span>›</button>
+    </div>
+    <p class="small muted" style="margin:16px 4px">🔒 所有顧客資料只存在這支手機的瀏覽器裡，不會上傳到任何伺服器。換手機或清除瀏覽器資料前，記得先備份。</p>
+    <p class="small muted" style="margin:0 4px 16px">共 ${state.customers.length} 位顧客・雅芳試點版 1.0</p>`;
+  $('#meInput').addEventListener('change', e => { p.me = e.target.value.trim(); save(); toast('已更新署名'); });
+  $('#bigSw').addEventListener('change', e => { p.big = e.target.checked; save(); render(); });
+  $('#restoreFile').addEventListener('change', async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      const data = JSON.parse(await f.text());
+      if (!Array.isArray(data.customers)) throw new Error('格式不符');
+      if (!confirm(`要用備份裡的 ${data.customers.length} 位顧客取代目前的資料嗎？`)) return;
+      state = migrate({ ...blank(), ...data, profile: { ...blank().profile, ...data.profile } }); save(); render(); toast('已還原備份');
+    } catch (err) { toast('這個檔案不是小幫手的備份檔'); }
+  });
+}
+function reminderICS() {
+  const d = today().replace(/-/g, '');
+  const url = location.origin + location.pathname;
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Sales Partner Copilot//ZH-TW', 'BEGIN:VEVENT',
+    `UID:spca-daily-${d}@sales-partner-copilot`, `DTSTAMP:${d}T000000Z`, `DTSTART:${d}T090000`, `DTEND:${d}T091500`, 'RRULE:FREQ=DAILY',
+    'SUMMARY:💗 打開雅芳銷售小幫手，關心今天的顧客', `DESCRIPTION:每天 5 分鐘，關心 3～5 位顧客。\\n${url}`, `URL:${url}`,
+    'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:打開雅芳銷售小幫手', 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+}
+function openGuide() {
+  openSheet(`
+    <div class="sheet-head"><h2 id="sheetTitle">📖 3 分鐘學會</h2><button class="icon-btn" data-act="close" aria-label="關閉">✕</button></div>
+    <p>每天只要做一件事：<b>打開「今天」，把名單上的顧客一位一位關心完。</b></p>
+    <ol class="steps-guide">
+      <li><div><b>先設定本期型錄</b><br><span class="muted small">填上期別和訂貨截止日，小幫手會在上架時提醒你分享、截止前提醒熟客訂貨。</span></div></li>
+      <li><div><b>看今天要關心誰</b><br><span class="muted small">生日、該回購、訂貨截止、試用回訪、新顧客、太久沒聯絡的，都會自動挑出來。</span></div></li>
+      <li><div><b>點「關心」→ 選一句話</b><br><span class="muted small">訊息已經寫好，不喜歡就按「換一句」或換語氣，也可以直接改字。</span></div></li>
+      <li><div><b>按「用 LINE 傳送」</b><br><span class="muted small">選好顧客就送出。訊息裡如果有不適合的用詞，小幫手會先提醒你。</span></div></li>
+      <li><div><b>記下對方怎麼回應</b><br><span class="muted small">有回覆、有訂貨、還沒回、改天再聯絡。小幫手會照結果安排下一次提醒。</span></div></li>
+    </ol>
+    <div class="tip">💡 送試用品時，到顧客資料按「🎁 送試用」記一下，過兩天小幫手就會提醒你回訪。</div>
+    <button class="btn primary block" style="margin-top:16px" data-act="close">知道了，開始吧</button>`);
+}
+function openWords() {
+  openSheet(`
+    <div class="sheet-head"><h2 id="sheetTitle">⚖️ 話術用詞小提醒</h2><button class="icon-btn" data-act="close" aria-label="關閉">✕</button></div>
+    <p class="small muted">傳訊息時如果出現下面這些字，小幫手會跳出提醒。這是提醒，不是法律意見；有疑問請洽公司。</p>
+    ${RISK.map(r => `<div class="card" style="margin-top:12px"><b>${esc(r.why)}</b>
+      <p class="small" style="margin:8px 0 0">❌ 例如：${esc(r.ex)}</p>
+      <p class="small" style="margin:6px 0 0">✅ ${esc(r.fix)}</p></div>`).join('')}
+    <div class="tip" style="margin-top:14px">💡 最安全的說法：分享<b>自己的使用感受</b>，邀請對方<b>先試用看看</b>。</div>`);
+}
+function openLeader() {
+  openSheet(`
+    <div class="sheet-head"><h2 id="sheetTitle">🧭 給領導人：帶夥伴用起來</h2><button class="icon-btn" data-act="close" aria-label="關閉">✕</button></div>
+    <h3>第 1 週：陪伴安裝</h3>
+    <ol class="steps-guide">
+      <li><div>在聚會或線上會議，請夥伴用手機打開連結，當場一起按「安裝」，並開好<b>大字模式</b>。</div></li>
+      <li><div>一起設定<b>本期型錄與截止日</b>，再載入練習資料，帶大家走完一位顧客的三步驟。</div></li>
+      <li><div>回家作業：清除練習資料，輸入自己最常聯絡的 5 位顧客。</div></li>
+    </ol>
+    <h3>第 2～4 週：養成習慣</h3>
+    <ol class="steps-guide">
+      <li><div>每天早上在群組提醒：「打開小幫手，關心今天的 3 位顧客」。</div></li>
+      <li><div>型錄上架當天，提醒大家按「分享型錄」；截止前 3 天，提醒大家看「訂貨截止」名單。</div></li>
+      <li><div>每週請夥伴在「業績」按「LINE 傳送」回報，表揚<b>連續行動天數</b>和<b>回應率</b>，不只看訂貨金額。</div></li>
+    </ol>
+    <h3>新人特別照顧</h3>
+    <ul>
+      <li>新人入會第一週就帶他安裝，第一張訂單從親友開始，用「首購關心」和「試用回訪」練習開口。</li>
+      <li>新人的第 2 個月最容易斷掉，這時多看他的成果週報、多鼓勵。</li>
+      <li>提醒夥伴：分享使用感受，不談療效、不談收入。可以一起看「話術用詞小提醒」。</li>
+    </ul>
+    <button class="btn line block" data-act="share-app">💚 把小幫手分享到團隊群組</button>`);
+}
+function openWelcome() {
+  openSheet(`
+    <div style="text-align:center;padding:14px 4px 4px"><img src="icons/icon-192.png" alt="AVON" width="84" height="84" style="border-radius:16px"></div>
+    <h2 id="sheetTitle" style="text-align:center;margin-top:10px">嗨！我是你的雅芳銷售小幫手</h2>
+    <ol class="steps-guide">
+      <li><div><b>每天告訴你該關心誰</b><br><span class="muted small">生日、該回購、型錄上架、訂貨截止，我會自動幫你挑出來。</span></div></li>
+      <li><div><b>幫你想好要說的話</b><br><span class="muted small">一鍵用 LINE 傳出去，不適合的用詞會先提醒你。</span></div></li>
+      <li><div><b>記下結果，看見成果</b><br><span class="muted small">每週一鍵回報給領導人。</span></div></li>
+    </ol>
+    <label class="field"><span>你希望訊息怎麼署名？</span><input id="wName" placeholder="例如：小芳" value="${esc(state.profile.me)}"></label>
+    <button class="btn primary block" style="margin-top:16px" data-act="welcome-practice">先用練習資料試試看</button>
+    <button class="btn block" style="margin-top:10px" data-act="welcome-blank">直接輸入我的顧客</button>
+    <p class="small muted" style="text-align:center">🔒 資料只存在你的手機，不會上傳</p>`, { locked: true });
+}
+function openCampaign() {
+  const cur = campaign() || state.profile.campaign || { no: '', start: today(), deadline: addDays(today(), 13), cycle: 14, highlight: '', link: '' };
+  openSheet(`
+    <div class="sheet-head"><h2 id="sheetTitle">📖 本期型錄與訂貨截止</h2><button class="icon-btn" data-act="close" aria-label="關閉">✕</button></div>
+    <p class="small muted">設定一次就好。選了「每幾天一期」，期別和截止日會自動跳到下一期。</p>
+    <form id="campForm">
+      <div class="field-row">
+        <label class="field"><span>期別</span><input name="no" type="number" inputmode="numeric" min="1" required value="${esc(cur.no)}" placeholder="例如 22"></label>
+        <label class="field"><span>每幾天一期</span><select name="cycle">${[[0, '不自動換期'], [14, '14 天'], [21, '21 天'], [28, '28 天']].map(([v, l]) => `<option value="${v}" ${+cur.cycle === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+      </div>
+      <div class="field-row">
+        <label class="field"><span>本期開始</span><input name="start" type="date" required value="${esc(cur.start)}"></label>
+        <label class="field"><span>訂貨截止</span><input name="deadline" type="date" required value="${esc(cur.deadline)}"></label>
+      </div>
+      <label class="field"><span>本期主打（一句話，可不填）</span><input name="highlight" value="${esc(cur.highlight || '')}" placeholder="例如：保濕系列有組合優惠"></label>
+      <div id="campRisk"></div>
+      <label class="field"><span>電子型錄連結（可不填）</span><input name="link" type="url" inputmode="url" value="${esc(cur.link || '')}" placeholder="https://"></label>
+      <button class="btn primary block" style="margin-top:18px" type="submit">儲存</button>
+      ${state.profile.campaign ? '<button type="button" class="btn ghost block" style="margin-top:8px" data-act="campaign-clear">清除型錄設定</button>' : ''}
+    </form>`);
+  const form = $('#campForm');
+  form.highlight.addEventListener('input', e => { $('#campRisk').innerHTML = riskHTML(riskCheck(e.target.value)); });
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const f = Object.fromEntries(new FormData(e.target));
+    if (f.deadline < f.start) { toast('截止日要在開始日之後'); return; }
+    state.profile.campaign = { no: +f.no || 1, start: f.start, deadline: f.deadline, cycle: +f.cycle || 0, highlight: f.highlight.trim(), link: f.link.trim() };
+    save(); closeSheet(); render(); toast(`已設定第 ${state.profile.campaign.no} 期`);
+  });
+}
+function catalogText() {
+  const k = campaign();
+  return `雅芳第 ${k.no} 期型錄來囉！${k.highlight ? `本期主打：${k.highlight}。` : ''}有喜歡的跟我說，${md(k.deadline)} 前都可以幫你訂😊${k.link ? '\n' + k.link : ''}${state.profile.me ? `\n— ${state.profile.me}` : ''}`;
+}
+
+/* ---------- 底部面板 ---------- */
+let sheetLocked = false;
+function openSheet(html, opt = {}) {
+  sheetLocked = !!opt.locked;
+  const card = $('#sheetCard');
+  card.innerHTML = `<div class="grab"></div>${html}`;
+  $('#sheet').classList.add('on');
+  document.body.style.overflow = 'hidden';
+  card.scrollTop = 0;
+}
+function closeSheet() { $('#sheet').classList.remove('on'); document.body.style.overflow = ''; sheetLocked = false; }
+$('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet' && !sheetLocked) closeSheet(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !sheetLocked) closeSheet(); });
+
+/* ---------- 事件 ---------- */
+function startPractice() {
+  state.customers = sampleCustomers(); state.profile.practice = true; state.profile.onboarded = true;
+  state.profile.campaign = practiceCampaign();
+  save(); closeSheet(); showAll = false; location.hash = '#today'; render();
+  toast('已載入練習顧客和第 22 期型錄，點第一位「關心」試試看');
+}
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-act],[data-care],[data-cust],[data-send],[data-result],[data-tone],[data-filter],[data-period],[data-later],[data-deftone],[data-daily],[data-theme-set]');
+  if (!el) return;
+  const d = el.dataset;
+  if (d.care) { openCare(d.care, d.reason); return; }
+  if (d.cust) { openCustomer(d.cust); return; }
+  if (d.send) { send(d.send); return; }
+  if (d.result) { pickResult(d.result); return; }
+  if (d.later) { finishResult('later', { followUp: addDays(today(), +d.later) }); return; }
+  if (d.tone) { flow.tone = d.tone; flow.idx = 0; flow.msg = buildMessage(byId(flow.id), flow); renderCare(); return; }
+  if (d.filter) { custFilter = d.filter; renderCustomers(); return; }
+  if (d.period) { period = +d.period; renderResults(); return; }
+  if (d.deftone) { state.profile.tone = d.deftone; save(); renderMore(); return; }
+  if (d.daily) { state.profile.daily = +d.daily; save(); render(); return; }
+  if (d.themeSet) { state.profile.theme = d.themeSet; save(); render(); return; }
+  switch (d.act) {
+    case 'close': closeSheet(); break;
+    case 'add': openCustomerForm(); break;
+    case 'import': openImport(); break;
+    case 'edit': openCustomerForm(d.id); break;
+    case 'add-purchase': openPurchaseForm(d.id); break;
+    case 'add-sample': openSampleForm(d.id); break;
+    case 'back-cust': openCustomer(d.id); break;
+    case 'back-care': renderCare(); break;
+    case 'delete': {
+      const c = byId(d.id);
+      if (confirm(`確定要刪除 ${c.name} 和所有紀錄嗎？`)) { state.customers = state.customers.filter(x => x.id !== d.id); save(); closeSheet(); render(); toast('已刪除'); }
+      break;
+    }
+    case 'show-all': showAll = !showAll; renderToday(); break;
+    case 'next-variant': flow.idx++; flow.msg = buildMessage(byId(flow.id), flow); $('#msg').value = flow.msg; updateRisk(); break;
+    case 'ai-help': openAIHelp(); break;
+    case 'copy-prompt': toast((await copy($('#aiPrompt').value)) ? '已複製，打開 AI 貼上就可以' : '請長按指令複製'); break;
+    case 'use-ai': { const v = $('#aiBack').value.trim(); if (!v) { toast('請先貼上 AI 寫好的訊息'); break; } flow.msg = v; renderCare(); toast('已放進訊息框，記得把「〇〇」換成本名'); break; }
+    case 'save-order':
+      finishResult('ordered', { cat: $('#oCat').value, product: $('#oProduct').value.trim(), amount: +$('#oAmount').value || 0, cycle: +$('#oCycle').value || 0 });
+      break;
+    case 'campaign': openCampaign(); break;
+    case 'campaign-clear': if (confirm('要清除本期型錄設定嗎？')) { state.profile.campaign = null; save(); closeSheet(); render(); } break;
+    case 'share-catalog': {
+      const text = catalogText();
+      const hits = riskCheck(text);
+      if (hits.length && !confirm(`本期主打裡有「${hits.flatMap(h => h.words).join('、')}」，可能不符合規範。確定還是要分享嗎？`)) break;
+      window.open('https://line.me/R/share?text=' + encodeURIComponent(text), '_blank');
+      break;
+    }
+    case 'words': openWords(); break;
+    case 'csv-template': download('雅芳顧客名單範本.csv', '﻿' + CSV_HEAD + '\r\n林美惠,美惠姐,0912-345-678,3/15,臉部保養,保濕精華液,2026/10/20,1680,60,敏感肌,V\r\n陳淑芬,,0922-111-222,,髮品,洗髮精,2026/10/05,590,45,,\r\n', 'text/csv;charset=utf-8'); break;
+    case 'report-copy': toast((await copy(reportText())) ? '已複製週報' : '請長按文字複製'); break;
+    case 'report-line': window.open('https://line.me/R/share?text=' + encodeURIComponent(reportText()), '_blank'); break;
+    case 'install': install(); break;
+    case 'hide-install': try { localStorage.setItem('spca-hide-install', today()); } catch (err) { /* 無法儲存 */ } render(); break;
+    case 'reminder': download('雅芳銷售小幫手每日提醒.ics', reminderICS(), 'text/calendar;charset=utf-8'); toast('打開下載的檔案，按「加入行事曆」就完成了'); break;
+    case 'share-app': {
+      const url = location.origin + location.pathname;
+      const text = '推薦你用「雅芳銷售小幫手」：每天告訴你該關心哪些顧客、訊息幫你寫好、一鍵 LINE 傳送。打開後按「安裝」就能放到手機桌面👇';
+      if (navigator.share) { try { await navigator.share({ title: '雅芳銷售小幫手', text, url }); } catch (err) { /* 使用者取消 */ } }
+      else window.open('https://line.me/R/share?text=' + encodeURIComponent(text + '\n' + url), '_blank');
+      break;
+    }
+    case 'guide': openGuide(); break;
+    case 'leader': openLeader(); break;
+    case 'practice':
+      if (state.customers.length && !state.profile.practice && !confirm('練習資料會取代目前的顧客資料，建議先備份。確定要載入嗎？')) break;
+      startPractice(); break;
+    case 'clear-practice':
+      if (confirm('要清除練習資料，開始輸入自己的顧客嗎？')) { state.customers = []; state.profile.practice = false; state.profile.campaign = null; save(); render(); openCustomerForm(); }
+      break;
+    case 'backup': download(`雅芳銷售小幫手備份-${today()}.json`, JSON.stringify(state, null, 1), 'application/json'); toast('已下載備份檔，請存到雲端硬碟或傳給自己'); break;
+    case 'wipe':
+      if (confirm('確定要清除所有顧客與紀錄嗎？這個動作無法復原，建議先備份。')) { state = blank(); state.profile.onboarded = true; save(); render(); toast('已清除'); }
+      break;
+    case 'welcome-practice': state.profile.me = $('#wName').value.trim(); startPractice(); break;
+    case 'welcome-blank': state.profile.me = $('#wName').value.trim(); state.profile.onboarded = true; save(); closeSheet(); go('customers'); openCustomerForm(); break;
+  }
+});
+$('#helpBtn').addEventListener('click', openGuide);
+window.addEventListener('hashchange', route);
+window.addEventListener('scroll', () => $('#top').classList.toggle('scrolled', scrollY > 4), { passive: true });
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; if (tab === 'today') renderToday(); });
+window.addEventListener('appinstalled', () => { deferredPrompt = null; render(); });
+// 跨日時自動更新今天的名單
+document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
+
+/* ---------- 啟動 ---------- */
+// 舊資料補上品類與試用欄位
+function migrate(s) {
+  s.customers.forEach(c => {
+    c.samples = c.samples || [];
+    c.purchases.forEach(p => { if (!p.cat) p.cat = guessCat(p.product); });
+  });
+  return s;
+}
+state = migrate(load());
+if (demo) {
+  document.documentElement.classList.add('demo');
+  state = blank();
+  state.profile = { ...state.profile, me: '小芳', onboarded: true, practice: true, campaign: practiceCampaign() };
+  state.customers = sampleCustomers();
+}
+route();
+if (demo === 'care') { const first = plan().todo[0]; if (first) openCare(first.c.id); }
+if (demo === 'results') go('results');
+if (!state.profile.onboarded && !demo) openWelcome();
+
+if ('serviceWorker' in navigator && location.protocol !== 'file:' && !demo) {
+  const hadController = !!navigator.serviceWorker.controller; // 第一次安裝不算更新
+  navigator.serviceWorker.register('./sw.js').then(reg => {
+    reg.addEventListener('updatefound', () => {
+      const w = reg.installing;
+      w && w.addEventListener('statechange', () => {
+        if (w.state === 'activated' && hadController) toast('小幫手有新版本了', '立即更新', () => location.reload());
+      });
+    });
+  }).catch(() => { /* 不支援時照常使用 */ });
+}
+</script>
+</body>
+</html>

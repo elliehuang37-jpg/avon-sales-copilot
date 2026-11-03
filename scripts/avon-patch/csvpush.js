@@ -1,0 +1,1 @@
+{ const cat = matchCat(catText) || guessCat(product); c.purchases.push({ id: uid(), date, cat, product, amount: +get(r, 'amount').replace(/[^\d.]/g, '') || 0, cycle: get(r, 'cycle') ? +get(r, 'cycle').replace(/\D/g, '') || 0 : catOf(cat).cycle }); }

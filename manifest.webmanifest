@@ -1,0 +1,110 @@
+{
+  "id": "./",
+  "name": "雅芳銷售小幫手 AVON Sales Partner Copilot",
+  "short_name": "雅芳小幫手",
+  "description": "雅芳直銷商專用：每天告訴你該關心哪些顧客、跟著型錄檔期提醒分享與訂貨、話術幫你寫好並提醒合規用詞，一鍵 LINE 傳送。資料只存在你的手機。",
+  "lang": "zh-Hant-TW",
+  "dir": "ltr",
+  "start_url": "./?source=pwa#today",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait",
+  "background_color": "#fbf8f8",
+  "theme_color": "#e5004b",
+  "categories": [
+    "business",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "今天要關心誰",
+      "short_name": "今日關懷",
+      "url": "./?source=shortcut#today",
+      "icons": [
+        {
+          "src": "icons/shortcut-today.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "新增顧客",
+      "short_name": "新增顧客",
+      "url": "./?source=shortcut#add",
+      "icons": [
+        {
+          "src": "icons/shortcut-today.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "本週業績",
+      "short_name": "業績",
+      "url": "./?source=shortcut#results",
+      "icons": [
+        {
+          "src": "icons/shortcut-today.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/today.png",
+      "sizes": "500x1084",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "今天要關心的顧客與本期型錄"
+    },
+    {
+      "src": "screenshots/care.png",
+      "sizes": "500x1084",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "三步驟：選一句話、傳送、記下結果"
+    },
+    {
+      "src": "screenshots/results.png",
+      "sizes": "500x1084",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "本週關心與業績"
+    },
+    {
+      "src": "screenshots/wide.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "在電腦上也能用"
+    }
+  ]
+}
